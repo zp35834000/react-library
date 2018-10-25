@@ -1,5 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
+
 import {login} from '../../redux/actions/common'
 
 
@@ -10,8 +11,10 @@ class Home extends React.Component{
     }
 
     login() {
-        this.props.history.push('/story');
-        this.props.changeUserName();
+        // this.props.history.push('/story');
+        const { dispatch } = this.props
+        dispatch(login('ownProps.name'));
+        // this.props.changeUserName();
     }
 
     render(){
@@ -34,7 +37,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             // debugger;
             dispatch(login('ownProps.name'))
             // console.log('11111')
-        }
+        },
+        dispatch
     }
 }
 
