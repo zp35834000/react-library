@@ -3,7 +3,6 @@ import {connect} from 'react-redux'
 
 import {login} from '../../redux/actions/common'
 
-
 class Home extends React.Component{
     constructor(props){
         super(props);
@@ -20,7 +19,7 @@ class Home extends React.Component{
     render(){
         return (
             <div>
-                <h1>home page</h1>
+                <h1 class='homePage'>home page</h1>
                 <a onClick={this.login}>login</a>
             </div>
         )
