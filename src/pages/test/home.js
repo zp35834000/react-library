@@ -10,7 +10,7 @@ class Home extends React.Component{
     }
 
     login() {
-        // this.props.history.push('/story');
+        this.props.history.push('/story');
         const { dispatch } = this.props
         dispatch(login('ownProps.name'));
         // this.props.changeUserName();
