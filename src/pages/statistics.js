@@ -17,7 +17,7 @@ class SiderDemo extends React.Component {
 
   render() {
     return (
-      <MainPage contentPage = {Home}></MainPage>
+        <Home></Home>
     );
   }
 }

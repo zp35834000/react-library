@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 
 import {login} from '../../redux/actions/common'
-
+import MainPage from '../../component/mainPage'
 class Home extends React.Component{
     constructor(props){
         super(props);
@@ -18,10 +18,11 @@ class Home extends React.Component{
 
     render(){
         return (
-            <div>
+            <MainPage history={this.props.history}>
                 <h1 class='homePage'>home page</h1>
                 <a onClick={this.login}>login</a>
-            </div>
+            </MainPage>
+            
         )
     }
 }
