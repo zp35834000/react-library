@@ -68,14 +68,27 @@ class Home extends React.Component{
     render(){
         return (
             <MainPage history={this.props.history}>
-                <div>
-                    <h1 class='homePage'>home page</h1>
+                    <h1 className='homePage'>home page</h1>
                     <a onClick={this.mockRondom}>login</a>
                     
-                    {/* <Button type="primary" onClick={this.showModal}>
+                    <Button type="primary" onClick={this.showModal}>
                         显示对话框
-                    </Button> */}
-                </div>
+                    </Button>
+                    <Modal ref="modal"
+                    visible={this.state.visible}
+                    title="对话框标题" onOk={this.handleOk} onCancel={this.handleCancel}
+                        footer={[
+                        <Button key="back" type="ghost" size="large" onClick={this.handleCancel}>返 回</Button>,
+                        <Button key="submit" type="primary" size="large" loading={this.state.loading} onClick={this.handleOk}>
+                            提 交
+                        </Button>
+                        ]}>
+                        <p>对话框的内容</p>
+                        <p>对话框的内容</p>
+                        <p>对话框的内容</p>
+                        <p>对话框的内容</p>
+                        <p>对话框的内容</p>
+                    </Modal>
             </MainPage>
             
         )

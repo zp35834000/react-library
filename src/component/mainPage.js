@@ -1,7 +1,7 @@
 import { Layout, Menu, Breadcrumb, Icon } from 'antd';
 import React from 'react'
 import './mainPage.css'
-
+import {Button} from 'antd'
 const { Header, Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
@@ -78,13 +78,14 @@ class SiderDemo extends React.Component {
         </Sider>
         <Layout>
           {/* <Header style={{ background: '#fff', padding: 0 }} /> */}
-          <Content style={{ margin: '0 16px' }} hassider='true'>
-            {this.props.children}
+          <Content style={{ margin: '0 16px' }} hasSider='true'>
+              {this.props.children}
           </Content>
           <Footer style={{ textAlign: 'center' }}>
             Ant Design ©2018 Created by Ant UED
           </Footer>
         </Layout>
+        
       </Layout>
     );
   }
