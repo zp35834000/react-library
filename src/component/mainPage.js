@@ -78,7 +78,7 @@ class SiderDemo extends React.Component {
         </Sider>
         <Layout>
           {/* <Header style={{ background: '#fff', padding: 0 }} /> */}
-          <Content style={{ margin: '0 16px' }} hasSider='true'>
+          <Content style={{ margin: '0 16px' }} hassider='true'>
             {this.props.children}
           </Content>
           <Footer style={{ textAlign: 'center' }}>

@@ -1,12 +1,60 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import axios from 'axios'
+import {Modal, Button} from 'antd'
 
 import {login} from '../../redux/actions/common'
 import MainPage from '../../component/mainPage'
+
 class Home extends React.Component{
     constructor(props){
         super(props);
-        this.login = this.login.bind(this)
+        this.state = {
+            visible: false,
+            loading: false
+        }
+        this.login = this.login.bind(this);
+        this.mockRondom = this.mockRondom.bind(this);
+        this.showModal = this.showModal.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
+        this.handleOk = this.handleOk.bind(this);
+    }
+
+    showModal(){
+        this.setState({
+            visible: true
+        })
+    }
+
+    handleCancel() {
+        this.setState({ visible: false });
+    }
+
+    handleOk() {
+        this.setState({ loading: true });
+        setTimeout(() => {
+          this.setState({ loading: false, visible: false });
+        }, 3000);
+    }
+
+    componentWillMount(){
+    }
+
+    mockRondom(){
+        
+        window.open('./Story')
+
+        axios.post('/test',{
+            params: {
+                id: 12345
+            }
+        })
+        .then(function (response) {
+            console.log(response.data);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
     }
 
     login() {
@@ -16,11 +64,18 @@ class Home extends React.Component{
         // this.props.changeUserName();
     }
 
+
     render(){
         return (
             <MainPage history={this.props.history}>
-                <h1 class='homePage'>home page</h1>
-                <a onClick={this.login}>login</a>
+                <div>
+                    <h1 class='homePage'>home page</h1>
+                    <a onClick={this.mockRondom}>login</a>
+                    
+                    {/* <Button type="primary" onClick={this.showModal}>
+                        显示对话框
+                    </Button> */}
+                </div>
             </MainPage>
             
         )
