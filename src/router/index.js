@@ -1,7 +1,6 @@
 import {BrowserRouter, Route} from 'react-router-dom'
 import React from 'react'
 
-import MainPage from '../component/mainPage'
 
 import Home from '../pages/test/home'
 import Story from '../pages/test/story'

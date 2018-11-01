@@ -1,7 +1,6 @@
 import React from 'react'
 
 
-import MainPage from '../component/mainPage'
 import Home from './test/home'
 
 

@@ -1,8 +1,7 @@
-import { Layout, Menu, Breadcrumb, Icon } from 'antd';
+import { Layout, Menu, Icon } from 'antd';
 import React from 'react'
 import './mainPage.css'
-import {Button} from 'antd'
-const { Header, Content, Footer, Sider } = Layout;
+const { Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
 
@@ -32,7 +31,6 @@ class SiderDemo extends React.Component {
 
   render() {
 
-    const ContentPage = this.props.contentPage;
     const reloadContent = this.reloadContent;
     return (
       <Layout style={{ minHeight: '100vh' }}>
