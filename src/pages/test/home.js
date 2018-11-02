@@ -113,15 +113,19 @@ class Home extends React.Component{
                         显示对话框
                     </Button>
                     <Table columns={columns} dataSource={data} scroll={{ x: 1500, y: 300 }} />
-                    <Modal ref="modal"
-                    visible={this.state.visible}
-                    title="对话框标题" onOk={this.handleOk} onCancel={this.handleCancel}
-                        footer={[
-                        <Button key="back" type="ghost" size="large" onClick={this.handleCancel}>返 回</Button>,
-                        <Button key="submit" type="primary" size="large" loading={this.state.loading} onClick={this.handleOk}>
-                            提 交
-                        </Button>
-                        ]}>
+                    <Modal  ref="modal"
+                            visible={this.state.visible}
+                            title="对话框标题" 
+                            onOk={this.handleOk} 
+                            onCancel={this.handleCancel}
+                            footer={[
+                            <Button key="back" type="ghost" size="large" onClick={this.handleCancel}>返 回</Button>,
+                            <Button key="submit" type="primary" size="large" loading={this.state.loading} onClick={this.handleOk}>
+                                提 交
+                            </Button>
+                            ]}
+                            bodyStyle={{height:'500px'}}
+                            width='1000px'>
                         <p>对话框的内容</p>
                         <p>对话框的内容</p>
                         <p>对话框的内容</p>
