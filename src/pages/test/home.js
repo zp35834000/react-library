@@ -5,7 +5,7 @@ import {Modal, Button, Table} from 'antd'
 
 import {login} from '../../redux/actions/common'
 import MainPage from '../../component/mainPage'
-
+import RegistrationForm from '../RegistrationForm'
 class Home extends React.Component{
     constructor(props){
         super(props);
@@ -41,6 +41,8 @@ class Home extends React.Component{
         this.handleCancel = this.handleCancel.bind(this);
         this.handleOk = this.handleOk.bind(this);
         this.getTableData = this.getTableData.bind(this);
+        this.submitForm = this.submitForm.bind(this);
+        this.onRef = this.onRef.bind(this);
     }
 
     showModal(){
@@ -101,6 +103,15 @@ class Home extends React.Component{
         this.setState({ data})
     }
 
+
+    submitForm() {
+        this.childForm.handleSubmit();
+    }
+
+    onRef(ref){
+        this.childForm = ref;
+    }
+
     render(){
         const columns = this.state.columns;
         const data = this.state.data;
@@ -115,22 +126,18 @@ class Home extends React.Component{
                     <Table columns={columns} dataSource={data} scroll={{ x: 1500, y: 300 }} />
                     <Modal  ref="modal"
                             visible={this.state.visible}
-                            title="对话框标题" 
+                            title="用户注册" 
                             onOk={this.handleOk} 
                             onCancel={this.handleCancel}
                             footer={[
                             <Button key="back" type="ghost" size="large" onClick={this.handleCancel}>返 回</Button>,
-                            <Button key="submit" type="primary" size="large" loading={this.state.loading} onClick={this.handleOk}>
+                            <Button key="submit" type="primary" size="large" loading={this.state.loading} onClick={this.submitForm}>
                                 提 交
                             </Button>
                             ]}
-                            bodyStyle={{height:'500px'}}
-                            width='1000px'>
-                        <p>对话框的内容</p>
-                        <p>对话框的内容</p>
-                        <p>对话框的内容</p>
-                        <p>对话框的内容</p>
-                        <p>对话框的内容</p>
+                            bodyStyle={{height:'600px'}}
+                            width='700px'>
+                        <RegistrationForm onRef={this.onRef}></RegistrationForm>
                     </Modal>
             </MainPage>
             
