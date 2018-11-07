@@ -1,8 +1,9 @@
 import React from 'react'
 
-import {Table} from 'antd'
+import {Table,Icon} from 'antd'
 
 import MainPage from '../../component/mainPage'
+import '../../images/iconfont/iconfont.css'
 
 const columns = [{
     title: 'Name',
@@ -23,7 +24,7 @@ const columns = [{
   const data = [{
     key: 1,
     name: 'John Brown sr.',
-    age: 60,
+    age: <Icon type="yibiaopan"  style={{ fontSize: '16px', color: '#08c' }}/>,
     address: 'New York No. 1 Lake Park',
     children: [{
       key: 11,

@@ -92,7 +92,7 @@ class Home extends React.Component{
 
     getTableData(){
         var data = [];
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 1000000; i++) {
             data.push({
               key: i,
               name: `Edrward ${i}`,
@@ -123,7 +123,7 @@ class Home extends React.Component{
                     <Button type="primary" onClick={this.showModal}>
                         显示对话框
                     </Button>
-                    <Table columns={columns} dataSource={data} scroll={{ x: 1500, y: 300 }} />
+                    <Table columns={columns} dataSource={data} scroll={{ x: 1500, y: 400 }} />
                     <Modal  ref="modal"
                             visible={this.state.visible}
                             title="用户注册" 
