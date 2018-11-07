@@ -3,7 +3,6 @@ import React from 'react'
 import {Table,Icon} from 'antd'
 
 import MainPage from '../../component/mainPage'
-import '../../images/iconfont/iconfont.css'
 
 const columns = [{
     title: 'Name',
@@ -24,7 +23,7 @@ const columns = [{
   const data = [{
     key: 1,
     name: 'John Brown sr.',
-    age: <Icon type="yibiaopan"  style={{ fontSize: '16px', color: '#08c' }}/>,
+    age: <li className="anticon-library anticon-yibiaopan"></li> ,
     address: 'New York No. 1 Lake Park',
     children: [{
       key: 11,
