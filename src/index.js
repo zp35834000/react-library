@@ -8,7 +8,6 @@ import * as serviceWorker from './serviceWorker';
 import Routes from './router'
 import configureStore from './store'
 import 'antd/dist/antd.css'
-import './images/common.less'
 
 require('./mock/mock')
 

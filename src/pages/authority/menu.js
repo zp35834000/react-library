@@ -1,101 +1,107 @@
 import React from 'react'
-
-import {Table,Icon} from 'antd'
+import axios from 'axios'
+import {Table,Button} from 'antd'
 
 import MainPage from '../../component/mainPage'
+import CustomIcon from '../../component/icon'
+
+
+const iconStyle = {
+  fontSize: '36px', 
+}
 
 const columns = [{
-    title: 'Name',
+    title: '名称',
     dataIndex: 'name',
-    key: 'name',
-    width: '40%',
+    width: '20%'
   }, {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
-    width: '30%',
+    title: '地址',
+    dataIndex: 'url',
+    width: '20%'
   }, {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address',
-  }];
-  
-  const data = [{
-    key: 1,
-    name: 'John Brown sr.',
-    age: <li className="anticon-library anticon-yibiaopan"></li> ,
-    address: 'New York No. 1 Lake Park',
-    children: [{
-      key: 11,
-      name: 'John Brown',
-      age: 42,
-      address: 'New York No. 2 Lake Park',
-    }, {
-      key: 12,
-      name: 'John Brown jr.',
-      age: 30,
-      address: 'New York No. 3 Lake Park',
-      children: [{
-        key: 121,
-        name: 'Jimmy Brown',
-        age: 16,
-        address: 'New York No. 3 Lake Park',
-      }],
-    }, {
-      key: 13,
-      name: 'Jim Green sr.',
-      age: 72,
-      address: 'London No. 1 Lake Park',
-      children: [{
-        key: 131,
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 2 Lake Park',
-        children: [{
-          key: 1311,
-          name: 'Jim Green jr.',
-          age: 25,
-          address: 'London No. 3 Lake Park',
-        }, {
-          key: 1312,
-          name: 'Jimmy Green sr.',
-          age: 18,
-          address: 'London No. 4 Lake Park',
-        }],
-      }],
-    }],
-  }, {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-  }];
-  
-  // rowSelection objects indicates the need for row selection
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    },
-    onSelect: (record, selected, selectedRows) => {
-      console.log(record, selected, selectedRows);
-    },
-    onSelectAll: (selected, selectedRows, changeRows) => {
-      console.log(selected, selectedRows, changeRows);
-    },
-  };
-
-  class Menu extends React.Component{
-    render(){
-        return (
-            <MainPage>
-                <Table 
-                    columns={columns} 
-                    rowSelection={rowSelection} 
-                    dataSource={data}>
-                </Table>
-            </MainPage>
-        )
+    title: '图标',
+    dataIndex: 'iconType',
+    width: '20%',
+    render: function(text, record){
+      console.log(record);
+      return <CustomIcon type = {text} style={iconStyle}></CustomIcon>;
     }
+  },{
+    title: '菜单等级',
+    dataIndex: 'level',
+  },{
+    title: '序号',
+    dataIndex: 'order',
+  }];
+  
+
+// rowSelection objects indicates the need for row selection
+const rowSelection = {
+  onChange: (selectedRowKeys, selectedRows) => {
+    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+  },
+  onSelect: (record, selected, selectedRows) => {
+    console.log(record, selected, selectedRows);
+  },
+  onSelectAll: (selected, selectedRows, changeRows) => {
+    console.log(selected, selectedRows, changeRows);
+  },
+};
+
+class Menu extends React.Component{
+
+  constructor(props){
+    super(props);
+    this.state = {
+      data: []
+    }
+
+    this.setTitle = this.setTitle.bind(this);
+    this.loadData = this.loadData.bind(this);
   }
 
-  export default Menu;
+  componentWillMount(){
+    this.loadData();
+  }
+
+  componentDidMount(){
+  }
+
+  // 获得权限菜单数据
+  loadData(){
+    const _this = this;
+    axios.post('/getMenu',{
+      params: {
+      }
+    }).then(function (response) {
+      _this.setState({data: response.data});
+        // console.log(response.data);
+    }).catch(function (error) {
+        console.log(error);
+    });
+  }
+
+  setTitle(currentPageData){
+    // console.log('title ===='+currentPageData);
+    return '权限菜单';
+  }
+
+  render(){
+    const setTitle = this.setTitle;
+    const data = this.state.data;
+    return (
+      <MainPage history={this.history}>
+        <Table
+          pagination = {false}
+          bordered = {true}
+          columns={columns} 
+          rowSelection={rowSelection} 
+          dataSource={data}>
+        </Table>
+      </MainPage>
+    )
+  }
+}
+
+export default Menu;
+
