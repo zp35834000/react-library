@@ -11,10 +11,10 @@ class Icon extends React.Component{
         const className = "anticon-library anticon-"+type;
         const style = this.props.style;
         return(
-            <li 
+            <i 
                 className={className}
                 style = {style}>
-            </li>
+            </i>
         )
     }
 }

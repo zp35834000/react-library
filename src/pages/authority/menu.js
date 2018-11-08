@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import {Table,Button} from 'antd'
+import {Table,Button, Icon} from 'antd'
 
 import MainPage from '../../component/mainPage'
 import CustomIcon from '../../component/icon'
@@ -90,7 +90,8 @@ class Menu extends React.Component{
     const setTitle = this.setTitle;
     const data = this.state.data;
     return (
-      <MainPage history={this.history}>
+      <MainPage history={this.props.history}>
+        <Icon type='desktop'></Icon>
         <Table
           pagination = {false}
           bordered = {true}

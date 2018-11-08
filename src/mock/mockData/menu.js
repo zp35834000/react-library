@@ -4,7 +4,7 @@ const menus = [
     {
         name: '权限管理',
         url: '',
-        iconType: '',
+        iconType: 'yingyongguanli',
         level: '0',
         order:'0',
         key: '0',
@@ -28,7 +28,7 @@ const menus = [
             {
                 name: '用户',
                 url: '/user',
-                iconType: '',
+                iconType: 'yingyongguanli',
                 level: '1',
                 order:'2',
                 key: '02',
@@ -36,7 +36,7 @@ const menus = [
                     {
                         name: '用户',
                         url: '/user',
-                        iconType: '',
+                        iconType: 'yingyongguanli',
                         level: '2',
                         order:'2',
                         key: '020',
@@ -49,7 +49,7 @@ const menus = [
     {
         name: '角色',
         url: '/role',
-        iconType: '',
+        iconType: 'yingyongguanli',
         level: '0',
         order:'1',
         key: '1',

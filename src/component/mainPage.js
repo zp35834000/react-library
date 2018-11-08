@@ -46,7 +46,6 @@ class mainPage extends React.Component {
 
   /** 拼接menu item*/
   getMentItem(){
-    debugger;
     const _this = this;
     const menusData = this.state.menuData;
     let menuItem = menusData.map((menuObj) => 
@@ -58,19 +57,21 @@ class mainPage extends React.Component {
 
 
   getSingleMengJsx(menuObj){
-    debugger;
     const _this = this;
     if(menuObj.children){
       return (<SubMenu
                 key={menuObj.key}
-                title={<span><CustomIcon type={menuObj.iconType} /><span>{menuObj.name}</span></span>}
+                title={<span><CustomIcon type={menuObj.iconType} /><span>  {menuObj.name}</span></span>}
               >
-              {menuObj.children.map((temp) => _this.getSingleMengJsx(temp))}
+                {menuObj.children.map((temp) => _this.getSingleMengJsx(temp))}
               </SubMenu>);
     }else{
-      return   (<Menu.Item key={menuObj.key} url={menuObj.url}>
-                  {/* <CustomIcon type={menuObj.iconType} /> */}
-                  <span>{menuObj.name}</span>
+      return   (<Menu.Item 
+                  key={menuObj.key} 
+                  url={menuObj.url} 
+                  className={"anticon-library anticon-"+menuObj.iconType}
+                >
+                  <span>  {menuObj.name}</span>
                 </Menu.Item>);
     }
   }
@@ -81,9 +82,9 @@ class mainPage extends React.Component {
   }
 
   reloadContent(item, key, path){
-    // this.props.history.push(url);
+    debugger;
     console.log(item.item.props.url);
-    console.log(this.props.history)
+    console.log(this.props.history);
     this.props.history.push(item.item.props.url);
   }
     
@@ -103,7 +104,7 @@ class mainPage extends React.Component {
                 defaultSelectedKeys={['6']} 
                 defaultOpenKeys = {['sub1']} 
                 mode="inline"
-                onClick = {reloadContent.bind(this)}>
+                onClick = {reloadContent}>
             {/* <Menu.Item key="1">
               <Icon type="pie-chart" />
               <span>Option 1</span>
@@ -117,6 +118,7 @@ class mainPage extends React.Component {
               title={<span><Icon type="user" /><span>User</span></span>}
             >
               <Menu.Item key="3" url='./Story' >
+                <Icon type="user" />
                 <span>Option 2</span>
               </Menu.Item>
               <Menu.Item key="4" >Bill</Menu.Item>
