@@ -6,49 +6,59 @@ import MainPage from '../../component/mainPage'
 import CustomIcon from '../../component/icon'
 import EditMenu from'./editMenu'
 
+// 选中的列key信息
+let selectedRowKeys;
+
 // 图标样式
 const iconStyle = {
   fontSize: '36px', 
 }
 
 // 列信息
-const columns = [{
-    title: '名称',
-    dataIndex: 'name',
-    width: '20%'
-  }, {
-    title: '地址',
-    dataIndex: 'url',
-    width: '20%'
-  }, {
-    title: '图标',
-    dataIndex: 'iconType',
-    width: '20%',
-    render: function(text, record){
-      console.log(record);
-      return <CustomIcon type = {text} style={iconStyle}></CustomIcon>;
-    }
-  },{
-    title: '菜单等级',
-    dataIndex: 'level',
-  },{
-    title: '序号',
-    dataIndex: 'order',
-  }];
+// const columns = [{
+//     title: '名称',
+//     dataIndex: 'name',
+//     width: '20%'
+//   }, {
+//     title: '地址',
+//     dataIndex: 'url',
+//     width: '20%'
+//   }, {
+//     title: '图标',
+//     dataIndex: 'iconType',
+//     width: '20%',
+//     render: function(text, record){
+//       return <CustomIcon type = {text} style={iconStyle}></CustomIcon>;
+//     }
+//   },{
+//     title: '菜单等级',
+//     dataIndex: 'level',
+//   },{
+//     title: '序号',
+//     dataIndex: 'order',
+//   },{
+//     title: '操作',
+//     dataIndex: 'operation_col',
+//     render: () => <a><Icon type="edit" onClick/></a>
+// }];
   
 
 // rowSelection objects indicates the need for row selection
 const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
+  onChange: (selectedRowKeyArr, selectedRows) => {
+    selectedRowKeys = selectedRowKeyArr;
     console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
   },
   onSelect: (record, selected, selectedRows) => {
-    console.log(record, selected, selectedRows);
+    // console.log(record, selected, selectedRows);
   },
   onSelectAll: (selected, selectedRows, changeRows) => {
-    console.log(selected, selectedRows, changeRows);
+    // console.log(selected, selectedRows, changeRows);
   },
 };
+
+
+
 
 class Menu extends React.Component{
 
@@ -64,6 +74,7 @@ class Menu extends React.Component{
     this.onRef = this.onRef.bind(this);
     this.closeEditWindow = this.closeEditWindow.bind(this);
     this.submitForm = this.submitForm.bind(this);
+    this.deleteSelectedRows = this.deleteSelectedRows.bind(this);
   }
 
   componentWillMount(){
@@ -83,8 +94,32 @@ class Menu extends React.Component{
     this.setState({editMenuVisible: false})
   }
 
-  // 获得权限菜单数据
 
+
+  // 编辑记录
+  editTableMenu(record){
+    console.log('edit operation'+record)
+  }
+
+  // 执行删除操作
+  deleteSelectedRows(){
+    const _this = this;
+
+    if(selectedRowKeys == undefined || selectedRowKeys.length == 0){
+      console.log('请选中一项')
+    }else{
+      axios.post('/menuController/delMenu',{
+        keys: selectedRowKeys
+      }).then(function (response) {
+        _this.loadData();
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+    
+  }
+
+  // 获得权限菜单数据
   loadData(){
     const _this = this;
     axios.post('/menuController/getMenu',{
@@ -92,7 +127,6 @@ class Menu extends React.Component{
       }
     }).then(function (response) {
       _this.setState({data: response.data});
-        // console.log(response.data);
     }).catch(function (error) {
         console.log(error);
     });
@@ -104,8 +138,16 @@ class Menu extends React.Component{
 
   // 提交编辑表单
   submitForm(){
-    let submitted = this.childForm.handleSubmit();
-    if(submitted){
+    const _this = this;
+    let values = this.childForm.handleSubmit();
+    axios.post('/menuController/addMenu',{
+      values
+    }).then(function (response) {
+      _this.loadData();
+    }).catch(function (error) {
+        console.log(error);
+    });
+    if(values !== false){
 
       this.closeEditWindow();
     }
@@ -113,11 +155,41 @@ class Menu extends React.Component{
 
 
   render(){
+    const _this = this;
     const data = this.state.data;
+    const columns = [{
+        title: '名称',
+        dataIndex: 'name',
+        width: '20%'
+      }, {
+        title: '地址',
+        dataIndex: 'url',
+        width: '20%'
+      }, {
+        title: '图标',
+        dataIndex: 'iconType',
+        width: '20%',
+        render: function(text, record){
+          return <CustomIcon type = {text} style={iconStyle}></CustomIcon>;
+        }
+      },{
+        title: '菜单等级',
+        dataIndex: 'level',
+      },{
+        title: '序号',
+        dataIndex: 'order',
+      },{
+        title: '操作',
+        dataIndex: 'operation_col',
+        render: (text, record, index) => <a onClick={() =>_this.editTableMenu(record)}><Icon type="edit" /></a>
+    }];
+
     return (
       
       <MainPage history={this.props.history}>
         <Button type="primary" onClick={this.openEditMenuWindow}><Icon type="plus" />添加菜单</Button>
+        &nbsp; &nbsp; &nbsp;       
+        <Button type="primary" onClick={this.deleteSelectedRows}><Icon type="delete" />添加选中菜单</Button>
         <div style={{height: '10px'}}></div>
         <Table
           pagination = {false}

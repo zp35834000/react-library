@@ -11,32 +11,18 @@ class EditMenuForm extends React.Component {
         super(props);
         this.state = {
             confirmDirty: false,
-            iconTypes: []
+            iconTypes: [],
+            allMenus: []
         }
         this.getAllIconTypes = this.getAllIconTypes.bind(this);
-        this.getIconSelect = this.getIconSelect.bind(this);
+        this.getAllMenus = this.getAllMenus.bind(this);
     }
 
-    // 获得icon选择下拉框
-    getIconSelect(){
-        const _this = this;
-        let iconSelect = (
-            <Select>
-                {_this.state.iconTypes.map(
-                    (iconType) => (
-                        <Select.Option value={iconType} key={iconType}>
-                            <CustomIcon type= {iconType}></CustomIcon>
-                        </Select.Option>
-                    )
-                )}
-            </Select>
-        )
-        return iconSelect;
-    }
 
     componentDidMount(){
         this.props.onRef(this);
         this.getAllIconTypes();
+        this.getAllMenus();
     }
 
 
@@ -53,7 +39,18 @@ class EditMenuForm extends React.Component {
         });
     }
 
-
+    // 获得所有权限菜单
+    getAllMenus(){
+        const _this = this;
+        axios.post('/menuController/getSimpleMenu',{
+            params: {
+            }
+        }).then(function (response) {
+            _this.setState({allMenus: response.data});
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
 
     // 提交表单
     handleSubmit = (e) => {
@@ -64,9 +61,8 @@ class EditMenuForm extends React.Component {
         }
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
-                debugger;
-                submitted = true;
+                submitted = values;
+                
             }
         });
         return submitted;
@@ -171,7 +167,15 @@ class EditMenuForm extends React.Component {
                     >
                         {getFieldDecorator('parentId', {
                         })(
-                            <Input />
+                            <Select allowClear={true}>
+                                {_this.state.allMenus.map(
+                                    (menu) => (
+                                        <Select.Option value={menu.key} key={menu.key}>
+                                            {menu.name}
+                                        </Select.Option>
+                                    )
+                                )}
+                            </Select>
                         )}
                     </FormItem>
                 </Form>

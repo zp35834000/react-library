@@ -57,11 +57,24 @@ let allMenus = [
     }
 ]
 
+
+
+// 深度复制源数据
+function copyAllMenus(){
+    let allMenuTemp = [];
+    for (let i = 0; i < allMenus.length; i++) {
+        let tempMenu = Object.assign({}, allMenus[i]);
+        allMenuTemp[i] = tempMenu;
+    }
+    return allMenuTemp;
+}
+
 // 获得制定id菜单的所有直系子集菜单
 function getDirectChildMenu(id){
     let directChildenMenu = [];
-    for (let i = 0; i < allMenus.length; i++) {
-        let singleMenu = allMenus[i];
+    let allMenusCopy = copyAllMenus();
+    for (let i = 0; i < allMenusCopy.length; i++) {
+        let singleMenu = allMenusCopy[i];
         if(singleMenu.parentId == id){
             directChildenMenu.push(singleMenu);
         }
@@ -86,7 +99,10 @@ function getMenuWithChildren(singleMenu){
 
 // 获得menu展示需要的数据个数，带有children属性
 function getAllMenuWithChildren(){
-    let topMenus = allMenus.filter(function(item){
+    debugger;
+    let allMenusCopy = copyAllMenus();
+
+    let topMenus = allMenusCopy.filter(function(item){
         return (item.parentId == undefined);
     });
 
@@ -98,6 +114,15 @@ function getAllMenuWithChildren(){
     return menuWithChildren;
 }
 
+
+//用于生成uuid
+function S4() {
+    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+}
+function guid() {
+    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+}
+
 // 获得所有menu方法
 export var getMenu =  Mock.mock( '/menuController/getMenu', function(options){
     let menuWithChildren = getAllMenuWithChildren();
@@ -105,5 +130,28 @@ export var getMenu =  Mock.mock( '/menuController/getMenu', function(options){
 })
 
 export var getSimpleMenu = Mock.mock('/menuController/getSimpleMenu', function(options){
+    return allMenus;
+})
 
+export var addMenu = Mock.mock('/menuController/addMenu', function(options){
+    let optionObj = JSON.parse(options.body);
+    let key = "cms"+guid();
+    optionObj.values.key = key;
+    allMenus.push(optionObj.values);
+})
+
+
+export var delMenu = Mock.mock('/menuController/delMenu', function(options){
+    let optionObj = JSON.parse(options.body);
+    let delKeys = optionObj.keys;
+    for (let i = 0; i < delKeys.length; i++) {
+        const delKey = delKeys[i];
+        for (let j = 0; j < allMenus.length; j++) {
+            const menu = allMenus[j];
+            if(menu.key == delKey){
+                allMenus.splice(j, 1);
+                break;
+            }
+        }
+    }
 })
