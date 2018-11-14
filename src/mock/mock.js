@@ -1,6 +1,6 @@
 import Mock from 'mockjs'
-import menuMock from './mockData/menu'
-
+import {} from './mockData/menu'
+import iconMock from './mockData/icon'
 
 Mock.mock( '/user', function(options){
     console.log(options);

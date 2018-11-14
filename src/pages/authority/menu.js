@@ -1,15 +1,17 @@
 import React from 'react'
 import axios from 'axios'
-import {Table,Button, Icon} from 'antd'
+import {Table,Button, Icon, Modal} from 'antd'
 
 import MainPage from '../../component/mainPage'
 import CustomIcon from '../../component/icon'
+import EditMenu from'./editMenu'
 
-
+// 图标样式
 const iconStyle = {
   fontSize: '36px', 
 }
 
+// 列信息
 const columns = [{
     title: '名称',
     dataIndex: 'name',
@@ -53,11 +55,15 @@ class Menu extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      data: []
+      data: [],
+      editMenuVisible: false
     }
 
-    this.setTitle = this.setTitle.bind(this);
     this.loadData = this.loadData.bind(this);
+    this.openEditMenuWindow = this.openEditMenuWindow.bind(this);
+    this.onRef = this.onRef.bind(this);
+    this.closeEditWindow = this.closeEditWindow.bind(this);
+    this.submitForm = this.submitForm.bind(this);
   }
 
   componentWillMount(){
@@ -67,10 +73,21 @@ class Menu extends React.Component{
   componentDidMount(){
   }
 
+  // 打开编辑菜单界面
+  openEditMenuWindow(){
+    this.setState({editMenuVisible: true});
+  }
+
+  // 关闭编辑窗口
+  closeEditWindow(){
+    this.setState({editMenuVisible: false})
+  }
+
   // 获得权限菜单数据
+
   loadData(){
     const _this = this;
-    axios.post('/getMenu',{
+    axios.post('/menuController/getMenu',{
       params: {
       }
     }).then(function (response) {
@@ -81,17 +98,27 @@ class Menu extends React.Component{
     });
   }
 
-  setTitle(currentPageData){
-    // console.log('title ===='+currentPageData);
-    return '权限菜单';
+  onRef(ref){
+    this.childForm = ref;
   }
 
+  // 提交编辑表单
+  submitForm(){
+    let submitted = this.childForm.handleSubmit();
+    if(submitted){
+
+      this.closeEditWindow();
+    }
+  }
+
+
   render(){
-    const setTitle = this.setTitle;
     const data = this.state.data;
     return (
+      
       <MainPage history={this.props.history}>
-        <Icon type='desktop'></Icon>
+        <Button type="primary" onClick={this.openEditMenuWindow}><Icon type="plus" />添加菜单</Button>
+        <div style={{height: '10px'}}></div>
         <Table
           pagination = {false}
           bordered = {true}
@@ -99,6 +126,21 @@ class Menu extends React.Component{
           rowSelection={rowSelection} 
           dataSource={data}>
         </Table>
+        <Modal  ref="modal"
+                visible={this.state.editMenuVisible}
+                title="添加菜单" 
+                onOk={this.handleOk} 
+                onCancel={this.closeEditWindow}
+                footer={[
+                <Button key="back" type="ghost" size="large" onClick={this.closeEditWindow}>返 回</Button>,
+                <Button key="submit" type="primary" size="large" loading={this.state.loading} onClick={this.submitForm}>
+                    提 交
+                </Button>
+                ]}
+                bodyStyle={{height:'400px'}}
+                width='700px'>
+            <EditMenu onRef={this.onRef}></EditMenu>
+        </Modal>
       </MainPage>
     )
   }

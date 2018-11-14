@@ -31,7 +31,7 @@ class mainPage extends React.Component {
   /** 加载菜单信息 */
   loadMenuData(){
     const _this = this;
-    axios.post('/getMenu',{
+    axios.post('/menuController/getMenu',{
       params: {
       }
     }).then(function (response) {
@@ -144,7 +144,7 @@ class mainPage extends React.Component {
               {this.props.children}
           </Content>
           <Footer style={{ textAlign: 'center' }}>
-            Ant Design ©2018 Created by Ant UED
+            React Library Created By zp
           </Footer>
         </Layout>
         
