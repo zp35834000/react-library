@@ -99,7 +99,6 @@ function getMenuWithChildren(singleMenu){
 
 // 获得menu展示需要的数据个数，带有children属性
 function getAllMenuWithChildren(){
-    debugger;
     let allMenusCopy = copyAllMenus();
 
     let topMenus = allMenusCopy.filter(function(item){
@@ -133,6 +132,7 @@ export var getSimpleMenu = Mock.mock('/menuController/getSimpleMenu', function(o
     return allMenus;
 })
 
+// 添加menu操作
 export var addMenu = Mock.mock('/menuController/addMenu', function(options){
     let optionObj = JSON.parse(options.body);
     let key = "cms"+guid();
@@ -140,7 +140,7 @@ export var addMenu = Mock.mock('/menuController/addMenu', function(options){
     allMenus.push(optionObj.values);
 })
 
-
+// 删除menu操作
 export var delMenu = Mock.mock('/menuController/delMenu', function(options){
     let optionObj = JSON.parse(options.body);
     let delKeys = optionObj.keys;
@@ -152,6 +152,21 @@ export var delMenu = Mock.mock('/menuController/delMenu', function(options){
                 allMenus.splice(j, 1);
                 break;
             }
+        }
+    }
+})
+
+// 编辑menu操作
+export var editMenu = Mock.mock('/menuController/editMenu', function(options){
+    let optionObj = JSON.parse(options.body);
+    let values = optionObj.values;
+    // 删除children属性
+    delete options['children'];
+    for (let i = 0; i < allMenus.length; i++) {
+        let menu = allMenus[i];
+        if(menu.key == values.key){
+            allMenus.splice(i, 1, values);
+            break;
         }
     }
 })

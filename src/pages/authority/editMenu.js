@@ -62,6 +62,10 @@ class EditMenuForm extends React.Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 submitted = values;
+                if(this.props.defaultEditRecord !== undefined
+                    && this.props.defaultEditRecord.key !== undefined){
+                    submitted.key = this.props.defaultEditRecord.key;
+                }
                 
             }
         });
@@ -97,7 +101,7 @@ class EditMenuForm extends React.Component {
                 },
             },
         };
-
+        const editMenu = this.props.defaultEditRecord;
         return (
                 <Form onSubmit={this.handleSubmit}>
                     <FormItem
@@ -107,9 +111,10 @@ class EditMenuForm extends React.Component {
                         {getFieldDecorator('name', {
                             rules: [ {
                             required: true, message: '请输出权限菜单名称!',
-                            }]
+                            }],
+                            initialValue: editMenu.name
                         })(
-                            <Input />
+                            <Input value={editMenu.name}/>
                         )}
                     </FormItem>
                     <FormItem
@@ -117,6 +122,7 @@ class EditMenuForm extends React.Component {
                         label="地址"
                     >
                         {getFieldDecorator('url', {
+                            initialValue: editMenu.url
                         })(
                             <Input />
                         )}
@@ -126,7 +132,7 @@ class EditMenuForm extends React.Component {
                         label='图标'
                     >
                         {getFieldDecorator('iconType', {
-
+                            initialValue: editMenu.iconType
                         })(
                             <Select allowClear={true}>
                                 {_this.state.iconTypes.map(
@@ -146,7 +152,8 @@ class EditMenuForm extends React.Component {
                         {getFieldDecorator('level', {
                             rules: [ {
                                 required: true, message: '请输出权限菜单级别!',
-                            }]
+                            }],
+                            initialValue: editMenu.level
                         })(
                             <Input />
                         )}
@@ -157,6 +164,7 @@ class EditMenuForm extends React.Component {
                     >
                         {getFieldDecorator('order', {
                             rules: [{ required: true, message: '请输入菜单顺序!' }],
+                            initialValue: editMenu.order
                         })(
                             <Input />
                         )}
@@ -166,6 +174,7 @@ class EditMenuForm extends React.Component {
                         label="父节点"
                     >
                         {getFieldDecorator('parentId', {
+                            initialValue: editMenu.parentId
                         })(
                             <Select allowClear={true}>
                                 {_this.state.allMenus.map(

@@ -66,7 +66,11 @@ class Menu extends React.Component{
     super(props);
     this.state = {
       data: [],
-      editMenuVisible: false
+      editMenuVisible: false,
+      eidtRecord: {
+        // 编辑类型，分为add和edit，add为添加，edit为编辑原类型，默认为添加
+        editType: 'add'
+      }
     }
 
     this.loadData = this.loadData.bind(this);
@@ -75,6 +79,8 @@ class Menu extends React.Component{
     this.closeEditWindow = this.closeEditWindow.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.deleteSelectedRows = this.deleteSelectedRows.bind(this);
+    this.editTableMenu = this.editTableMenu.bind(this);
+    this.openBlankEditWindow = this.openBlankEditWindow.bind(this);
   }
 
   componentWillMount(){
@@ -91,23 +97,39 @@ class Menu extends React.Component{
 
   // 关闭编辑窗口
   closeEditWindow(){
-    this.setState({editMenuVisible: false})
+    this.setState({editMenuVisible: false});
+    this.childForm.props.form.resetFields();
   }
 
+
+  // 打开空的编辑界面
+  openBlankEditWindow(){
+    let record = {
+      editType: 'add'
+    }
+    
+    this.setState({eidtRecord: record});
+    this.openEditMenuWindow();
+  }
 
 
   // 编辑记录
   editTableMenu(record){
-    console.log('edit operation'+record)
+    record.editType = 'edit';
+    this.setState({eidtRecord: record});
+    this.openEditMenuWindow();
+    // console.log('edit operation'+record)
   }
 
   // 执行删除操作
   deleteSelectedRows(){
     const _this = this;
-
+    
     if(selectedRowKeys == undefined || selectedRowKeys.length == 0){
       console.log('请选中一项')
     }else{
+
+      // 删除操作
       axios.post('/menuController/delMenu',{
         keys: selectedRowKeys
       }).then(function (response) {
@@ -115,8 +137,8 @@ class Menu extends React.Component{
       }).catch(function (error) {
         console.log(error);
       });
+
     }
-    
   }
 
   // 获得权限菜单数据
@@ -140,16 +162,43 @@ class Menu extends React.Component{
   submitForm(){
     const _this = this;
     let values = this.childForm.handleSubmit();
-    axios.post('/menuController/addMenu',{
-      values
-    }).then(function (response) {
-      _this.loadData();
-    }).catch(function (error) {
-        console.log(error);
-    });
+    // 编辑类型
+    const editType = this.state.eidtRecord.editType;
+    // 检验成功，则返回值不为false
     if(values !== false){
-
+      // 关闭窗口
       this.closeEditWindow();
+      // 提交输入参数
+
+
+      if('add' === editType){
+        // 添加操作
+        axios.post('/menuController/addMenu',{
+          values
+        }).then(function (response) {
+          _this.loadData();
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }else if('edit' === editType){
+        // 编辑操作
+        axios.post('/menuController/editMenu',{
+          values
+        }).then(function (response) {
+          _this.loadData();
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
+
+
+      // axios.post('/menuController/addMenu',{
+      //   values
+      // }).then(function (response) {
+      //   _this.loadData();
+      // }).catch(function (error) {
+      //     console.log(error);
+      // });
     }
   }
 
@@ -187,9 +236,9 @@ class Menu extends React.Component{
     return (
       
       <MainPage history={this.props.history}>
-        <Button type="primary" onClick={this.openEditMenuWindow}><Icon type="plus" />添加菜单</Button>
+        <Button type="primary" onClick={this.openBlankEditWindow}><Icon type="plus" />添加菜单</Button>
         &nbsp; &nbsp; &nbsp;       
-        <Button type="primary" onClick={this.deleteSelectedRows}><Icon type="delete" />添加选中菜单</Button>
+        <Button type="primary" onClick={this.deleteSelectedRows}><Icon type="delete" />删除选中菜单</Button>
         <div style={{height: '10px'}}></div>
         <Table
           pagination = {false}
@@ -211,7 +260,7 @@ class Menu extends React.Component{
                 ]}
                 bodyStyle={{height:'400px'}}
                 width='700px'>
-            <EditMenu onRef={this.onRef}></EditMenu>
+            <EditMenu onRef={this.onRef} defaultEditRecord={this.state.eidtRecord}></EditMenu>
         </Modal>
       </MainPage>
     )
