@@ -1,5 +1,6 @@
 import Mock from 'mockjs'
 
+
 // 数据源
 let allMenus = [
     {
@@ -10,14 +11,6 @@ let allMenus = [
         order:'0',
         key: '0',
 
-    },
-    {
-        name: '角色',
-        url: '/role',
-        iconType: 'yingyongguanli',
-        level: '0',
-        order:'1',
-        key: '1',
     },
     {
         name: '权限菜单',
@@ -45,15 +38,6 @@ let allMenus = [
         order:'2',
         key: '02',
         parentId: '0',
-    },
-    {
-        name: '用户',
-        url: '/user',
-        iconType: 'yingyongguanli',
-        level: '2',
-        order:'2',
-        key: '020',
-        parentId: '02'
     }
 ]
 

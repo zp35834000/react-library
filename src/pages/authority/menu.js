@@ -2,6 +2,8 @@ import React from 'react'
 import axios from 'axios'
 import {Table,Button, Icon, Modal} from 'antd'
 
+import {menuSet} from '../../redux/actions/common'
+import {connect} from 'react-redux'
 import MainPage from '../../component/mainPage'
 import CustomIcon from '../../component/icon'
 import EditMenu from'./editMenu'
@@ -14,33 +16,6 @@ const iconStyle = {
   fontSize: '36px', 
 }
 
-// 列信息
-// const columns = [{
-//     title: '名称',
-//     dataIndex: 'name',
-//     width: '20%'
-//   }, {
-//     title: '地址',
-//     dataIndex: 'url',
-//     width: '20%'
-//   }, {
-//     title: '图标',
-//     dataIndex: 'iconType',
-//     width: '20%',
-//     render: function(text, record){
-//       return <CustomIcon type = {text} style={iconStyle}></CustomIcon>;
-//     }
-//   },{
-//     title: '菜单等级',
-//     dataIndex: 'level',
-//   },{
-//     title: '序号',
-//     dataIndex: 'order',
-//   },{
-//     title: '操作',
-//     dataIndex: 'operation_col',
-//     render: () => <a><Icon type="edit" onClick/></a>
-// }];
   
 
 // rowSelection objects indicates the need for row selection
@@ -64,13 +39,16 @@ class Menu extends React.Component{
 
   constructor(props){
     super(props);
+
+    
     this.state = {
       data: [],
       editMenuVisible: false,
       eidtRecord: {
         // 编辑类型，分为add和edit，add为添加，edit为编辑原类型，默认为添加
         editType: 'add'
-      }
+      },
+      menuKey: '00'
     }
 
     this.loadData = this.loadData.bind(this);
@@ -85,9 +63,11 @@ class Menu extends React.Component{
 
   componentWillMount(){
     this.loadData();
+    
   }
 
   componentDidMount(){
+
   }
 
   // 打开编辑菜单界面
@@ -191,14 +171,6 @@ class Menu extends React.Component{
         });
       }
 
-
-      // axios.post('/menuController/addMenu',{
-      //   values
-      // }).then(function (response) {
-      //   _this.loadData();
-      // }).catch(function (error) {
-      //     console.log(error);
-      // });
     }
   }
 
@@ -235,7 +207,8 @@ class Menu extends React.Component{
 
     return (
       
-      <MainPage history={this.props.history}>
+      <MainPage history={this.props.history}
+                >
         <Button type="primary" onClick={this.openBlankEditWindow}><Icon type="plus" />添加菜单</Button>
         &nbsp; &nbsp; &nbsp;       
         <Button type="primary" onClick={this.deleteSelectedRows}><Icon type="delete" />删除选中菜单</Button>
@@ -267,5 +240,17 @@ class Menu extends React.Component{
   }
 }
 
-export default Menu;
+function mapDispatchToProps(dispatch, ownProps){
+  return {
+    setMenuKey: () =>{
+      dispatch(menuSet(ownProps.currentMenuKey));
+    }
+  }
+}
+
+// export default Menu;
+export default connect(
+  null,
+  mapDispatchToProps
+)(Menu);
 

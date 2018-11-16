@@ -89,6 +89,7 @@ class mainPage extends React.Component {
   }
     
 
+
   render() {
 
     const reloadContent = this.reloadContent;
@@ -101,8 +102,8 @@ class mainPage extends React.Component {
         >
           <div className="logo" />
           <Menu theme="dark" 
-                defaultSelectedKeys={['6']} 
-                defaultOpenKeys = {['sub1']} 
+                defaultSelectedKeys={['6']}
+                defaultOpenKeys = {['sub1', 'sub12']}
                 mode="inline"
                 onClick = {reloadContent}>
             {/* <Menu.Item key="1">
@@ -117,10 +118,20 @@ class mainPage extends React.Component {
               key="sub1"
               title={<span><Icon type="user" /><span>User</span></span>}
             >
-              <Menu.Item key="3" url='./Story' >
-                <Icon type="user" />
-                <span>Option 2</span>
-              </Menu.Item>
+
+
+              <SubMenu
+                key="sub12"
+                title={<span><Icon type="user" /><span>User</span></span>}
+              >
+                <Menu.Item key="31" url='./Story' >
+                  <Icon type="user" />
+                  <span>Option 2</span>
+                </Menu.Item>
+                <Menu.Item key="41" >Bill</Menu.Item>
+                <Menu.Item key="51">Alex</Menu.Item>
+              </SubMenu>
+
               <Menu.Item key="4" >Bill</Menu.Item>
               <Menu.Item key="5">Alex</Menu.Item>
             </SubMenu>
