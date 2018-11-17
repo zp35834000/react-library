@@ -51,6 +51,9 @@ class Menu extends React.Component{
       menuKey: '00'
     }
 
+    this.props.dispatch(menuSet(this.state.menuKey));
+
+
     this.loadData = this.loadData.bind(this);
     this.openEditMenuWindow = this.openEditMenuWindow.bind(this);
     this.onRef = this.onRef.bind(this);
@@ -240,11 +243,17 @@ class Menu extends React.Component{
   }
 }
 
+
+function mapStateToProps(state){
+  const {menuKey} = state;
+  return {
+    reduxMenuKey: menuKey
+  }
+}
+
 function mapDispatchToProps(dispatch, ownProps){
   return {
-    setMenuKey: () =>{
-      dispatch(menuSet(ownProps.currentMenuKey));
-    }
+    dispatch
   }
 }
 

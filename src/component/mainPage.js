@@ -1,6 +1,8 @@
 import { Layout, Menu, Icon } from 'antd';
 import React from 'react'
 import axios from 'axios'
+import {connect} from 'react-redux'
+import {ajax as jqueryAjax} from 'jquery'
 
 import './mainPage.css'
 import CustomIcon from './icon'
@@ -13,20 +15,49 @@ class mainPage extends React.Component {
 
   constructor(props){
       super(props);
+
+
       this.state = {
           collapsed: false,
           menuData: [],
-          menuItem: null
+          menuItem: null,
+          defaultSelectedKeys: [],
+          defaultOpenKeys: []
       }
+
+
       this.reloadContent = this.reloadContent.bind(this);
       this.loadMenuData = this.loadMenuData.bind(this);
-      this.getMentItem = this.getMentItem.bind(this)
+      this.getMentItem = this.getMentItem.bind(this);
+      this.setSelectKeys = this.setSelectKeys.bind(this);
   }
+
 
   componentWillMount(){
     this.loadMenuData();
+    this.setSelectKeys();
   }
 
+  // 设置默认高亮展示选项
+  setSelectKeys(){
+    const _this = this;
+    const selectMenuKeys = this.props.reduxMenuKey;
+    _this.setState({defaultSelectedKeys: [selectMenuKeys]});
+    // 获得默认展开的节点,需要注意的是，这里必须同步请求
+    // 可能是defaultOpenKeys在初次设置之后，如果在改变值，是无效的
+    jqueryAjax({
+      type: 'post',
+      url: '/menuController/getParentMenuKey',
+      async: false,
+      data: {
+        selectMenuKeys
+      },
+      success: (data) =>{
+        let dataObj = JSON.parse(data);
+        _this.setState({defaultOpenKeys: dataObj});
+      }
+    })
+  }
 
   /** 加载菜单信息 */
   loadMenuData(){
@@ -82,7 +113,6 @@ class mainPage extends React.Component {
   }
 
   reloadContent(item, key, path){
-    debugger;
     console.log(item.item.props.url);
     console.log(this.props.history);
     this.props.history.push(item.item.props.url);
@@ -93,6 +123,9 @@ class mainPage extends React.Component {
   render() {
 
     const reloadContent = this.reloadContent;
+
+
+
     return (
       <Layout style={{ minHeight: '100vh' }}>
         <Sider
@@ -102,50 +135,11 @@ class mainPage extends React.Component {
         >
           <div className="logo" />
           <Menu theme="dark" 
-                defaultSelectedKeys={['6']}
-                defaultOpenKeys = {['sub1', 'sub12']}
+                defaultSelectedKeys={this.state.defaultSelectedKeys}
+                defaultOpenKeys = {this.state.defaultOpenKeys}
                 mode="inline"
-                onClick = {reloadContent}>
-            {/* <Menu.Item key="1">
-              <Icon type="pie-chart" />
-              <span>Option 1</span>
-            </Menu.Item>
-            <Menu.Item key="2">
-              <Icon type="desktop" />
-              <span>Option 2</span>
-            </Menu.Item>
-            <SubMenu
-              key="sub1"
-              title={<span><Icon type="user" /><span>User</span></span>}
-            >
-
-
-              <SubMenu
-                key="sub12"
-                title={<span><Icon type="user" /><span>User</span></span>}
-              >
-                <Menu.Item key="31" url='./Story' >
-                  <Icon type="user" />
-                  <span>Option 2</span>
-                </Menu.Item>
-                <Menu.Item key="41" >Bill</Menu.Item>
-                <Menu.Item key="51">Alex</Menu.Item>
-              </SubMenu>
-
-              <Menu.Item key="4" >Bill</Menu.Item>
-              <Menu.Item key="5">Alex</Menu.Item>
-            </SubMenu>
-            <SubMenu
-              key="sub2"
-              title={<span><Icon type="team" /><span>Team</span></span>}
-            >
-              <Menu.Item key="6">Team 1</Menu.Item>
-              <Menu.Item key="8">Team 2</Menu.Item>
-            </SubMenu>
-            <Menu.Item key="9">
-              <Icon type="file" />
-              <span>File</span>
-            </Menu.Item> */}
+                onClick = {reloadContent}
+                >
             {this.state.menuItem}
           </Menu>
         </Sider>
@@ -164,4 +158,18 @@ class mainPage extends React.Component {
   }
 }
 
-export default mainPage;
+
+function mapStateToProps(state){
+  const {menuKey} = state;
+  return {
+    reduxMenuKey: menuKey
+  }
+}
+
+
+// export default Menu;
+export default connect(
+  mapStateToProps
+)(mainPage);
+
+// export default mainPage;

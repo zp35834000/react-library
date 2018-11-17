@@ -97,6 +97,35 @@ function getAllMenuWithChildren(){
     return menuWithChildren;
 }
 
+// 根据menu实体获得该menu的所有父级menu key集合
+function getParentKeyAction(parentKeyArr, selectMenuKeys){
+    if(selectMenuKeys.parentId == undefined){
+        return parentKeyArr;
+    }else{
+        let parentMenu;
+        for (let i = 0; i < allMenus.length; i++) {
+            const singleMenu = allMenus[i];
+            if(singleMenu.key == selectMenuKeys.parentId){
+                parentKeyArr.push(singleMenu.key);
+                parentMenu = singleMenu;
+                break;
+            }
+        }
+
+        return getParentKeyAction(parentKeyArr, parentMenu);
+    }
+}
+
+
+// 根据menu key获得该menu对象
+function getMenuByKeyAction(menuKey){
+    for (let i = 0; i < allMenus.length; i++) {
+        const singleMenu = allMenus[i];
+        if(singleMenu.key == menuKey){
+            return singleMenu;
+        }
+    }
+}
 
 //用于生成uuid
 function S4() {
@@ -153,4 +182,16 @@ export var editMenu = Mock.mock('/menuController/editMenu', function(options){
             break;
         }
     }
+})
+
+
+
+export var getParentMenuKey = Mock.mock('/menuController/getParentMenuKey', function(options){
+    // const optionObj = JSON.parse(options.body);
+    // const selectKey = optionObj.params.selectMenuKeys;
+    const selectKey = options.body.split('=')[1];
+    
+    const selectMenu = getMenuByKeyAction(selectKey);
+    let parentKeyArr = getParentKeyAction([], selectMenu)
+    return parentKeyArr;
 })

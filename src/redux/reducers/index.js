@@ -4,10 +4,10 @@ import loginName from './user'
 
 function menuKey(state = '', action) {
     switch(action.type) {
-        case 'USER_LOGIN' :
+        case 'MENU_KEY' :
             return action.menuKey
         default:
-            return ''
+            return '01'
     }
 }
 
