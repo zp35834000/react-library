@@ -6,6 +6,6 @@ const iconTypes = [
 ]
 
 // 获得所有icon Type
-export default Mock.mock('/iconController/getAllTypes', function(options){
+export var getAllTypes =  Mock.mock('/iconController/getAllTypes', function(options){
     return iconTypes;
 })

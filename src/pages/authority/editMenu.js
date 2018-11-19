@@ -89,109 +89,98 @@ class EditMenuForm extends React.Component {
                 sm: { span: 16 },
             },
         };
-        const tailFormItemLayout = {
-            wrapperCol: {
-                xs: {
-                    span: 24,
-                    offset: 0,
-                },
-                sm: {
-                    span: 16,
-                    offset: 8,
-                },
-            },
-        };
+
         const editMenu = this.props.defaultEditRecord;
         return (
-                <Form onSubmit={this.handleSubmit}>
-                    <FormItem
-                        {...formItemLayout}
-                        label="名称"
+            <Form onSubmit={this.handleSubmit}>
+                <FormItem
+                    {...formItemLayout}
+                    label="名称"
+                >
+                    {getFieldDecorator('name', {
+                        rules: [ {
+                        required: true, message: '请输入权限菜单名称!',
+                        }],
+                        initialValue: editMenu.name
+                    })(
+                        <Input value={editMenu.name}/>
+                    )}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label="地址"
+                >
+                    {getFieldDecorator('url', {
+                        initialValue: editMenu.url
+                    })(
+                        <Input />
+                    )}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label='图标'
+                >
+                    {getFieldDecorator('iconType', {
+                        initialValue: editMenu.iconType
+                    })(
+                        <Select allowClear={true}>
+                            {_this.state.iconTypes.map(
+                                (iconType) => (
+                                    <Select.Option value={iconType} key={iconType}>
+                                        <CustomIcon type= {iconType}></CustomIcon>
+                                    </Select.Option>
+                                )
+                            )}
+                        </Select>
+                    )}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label="菜单级别"
                     >
-                        {getFieldDecorator('name', {
-                            rules: [ {
-                            required: true, message: '请输出权限菜单名称!',
-                            }],
-                            initialValue: editMenu.name
-                        })(
-                            <Input value={editMenu.name}/>
-                        )}
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label="地址"
-                    >
-                        {getFieldDecorator('url', {
-                            initialValue: editMenu.url
-                        })(
-                            <Input />
-                        )}
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label='图标'
-                    >
-                        {getFieldDecorator('iconType', {
-                            initialValue: editMenu.iconType
-                        })(
-                            <Select allowClear={true}>
-                                {_this.state.iconTypes.map(
-                                    (iconType) => (
-                                        <Select.Option value={iconType} key={iconType}>
-                                            <CustomIcon type= {iconType}></CustomIcon>
-                                        </Select.Option>
-                                    )
-                                )}
-                            </Select>
-                        )}
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label="菜单级别"
-                        >
-                        {getFieldDecorator('level', {
-                            rules: [ {
-                                required: true, message: '请输出权限菜单级别!',
-                            }],
-                            initialValue: editMenu.level
-                        })(
-                            <Input />
-                        )}
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label="菜单顺序"
-                    >
-                        {getFieldDecorator('order', {
-                            rules: [{ required: true, message: '请输入菜单顺序!' }],
-                            initialValue: editMenu.order
-                        })(
-                            <Input />
-                        )}
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label="父节点"
-                    >
-                        {getFieldDecorator('parentId', {
-                            initialValue: editMenu.parentId
-                        })(
-                            <Select allowClear={true}>
-                                {_this.state.allMenus.map(
-                                    (menu) => (
-                                        <Select.Option value={menu.key} key={menu.key}>
-                                            {menu.name}
-                                        </Select.Option>
-                                    )
-                                )}
-                            </Select>
-                        )}
-                    </FormItem>
-                </Form>
-            );
-        }
+                    {getFieldDecorator('level', {
+                        rules: [ {
+                            required: true, message: '请输出权限菜单级别!',
+                        }],
+                        initialValue: editMenu.level
+                    })(
+                        <Input />
+                    )}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label="菜单顺序"
+                >
+                    {getFieldDecorator('order', {
+                        rules: [{ required: true, message: '请输入菜单顺序!' }],
+                        initialValue: editMenu.order
+                    })(
+                        <Input />
+                    )}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label="父节点"
+                >
+                    {getFieldDecorator('parentId', {
+                        initialValue: editMenu.parentId
+                    })(
+                        <Select allowClear={true}>
+                            {_this.state.allMenus.map(
+                                (menu) => (
+                                    <Select.Option value={menu.key} key={menu.key}>
+                                        {menu.name}
+                                    </Select.Option>
+                                )
+                            )}
+                        </Select>
+                    )}
+                </FormItem>
+            </Form>
+        );
     }
+}
 
-    const WrappedEditMenuForm = Form.create()(EditMenuForm);
+const WrappedEditMenuForm = Form.create()(EditMenuForm);
 
-    export default WrappedEditMenuForm;
+export default WrappedEditMenuForm;
