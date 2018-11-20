@@ -1,5 +1,6 @@
 import Mock from 'mockjs'
 
+import {guid} from '../util'
 
 // 数据源
 let allMenus = [
@@ -127,13 +128,6 @@ function getMenuByKeyAction(menuKey){
     }
 }
 
-//用于生成uuid
-function S4() {
-    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-}
-function guid() {
-    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
-}
 
 // 获得所有menu方法
 export var getMenu =  Mock.mock( '/menuController/getMenu', function(options){

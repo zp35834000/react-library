@@ -1,12 +1,15 @@
 import React from 'react'
 import axios from 'axios'
-import {Table,Button, Icon, Modal} from 'antd'
+import {Table,Button, Icon, Modal, Tree, Drawer} from 'antd'
 import {connect} from 'react-redux'
 
 import {menuSet} from '../../redux/actions/common'
 import MainPage from '../../component/mainPage'
 import CustomIcon from '../../component/icon'
 import EditRole from './editRole'
+
+const TreeNode = Tree.TreeNode;
+
 
 
 class Role extends React.Component{
@@ -22,7 +25,9 @@ class Role extends React.Component{
                 editType: 'add'
             },
             // 选中的列key值集合
-            selectedRowKeys: []
+            selectedRowKeys: [],
+            // 设置用户菜单关系抽屉界面是否显示
+            roleMenuRelDrawn: true
         }
 
         this.props.dispatch(menuSet(this.state.menuKey));
@@ -35,13 +40,18 @@ class Role extends React.Component{
         this.onRef = this.onRef.bind(this);
         this.openBlankEditWindow = this.openBlankEditWindow.bind(this);
         this.deleteSelectedRows = this.deleteSelectedRows.bind(this);
+        this.toogleRoleMenuRelDrawn = this.toogleRoleMenuRelDrawn.bind(this);
     }
     
     componentWillMount(){
         this.loadData();
     }
 
-
+    // 重新设置抽屉的显示与否
+    toogleRoleMenuRelDrawn(){
+        const ifRoleMenuRelDrawn = this.state.roleMenuRelDrawn;
+        this.setState({roleMenuRelDrawn: !ifRoleMenuRelDrawn});
+    }
 
     // 打开编辑窗口
     openEditWindow(){
@@ -189,6 +199,29 @@ class Role extends React.Component{
                     dataSource={this.state.data}>
                 >
                 </Table>
+                <Drawer
+                    visible={this.state.roleMenuRelDrawn}
+                    width={300}
+                    onClose={this.toogleRoleMenuRelDrawn}
+                    placement="right"
+                    handler={
+                      <div >
+                        <Icon
+                          type={this.state.roleMenuRelDrawn ? 'close' : 'setting'}
+                          style={{
+                            color: '#fff',
+                            fontSize: 20,
+                          }}
+                        />
+                      </div>
+                    }
+                    onHandleClick={this.toogleRoleMenuRelDrawn}
+                    style={{
+                      zIndex: 999,
+                    }}
+                >
+                    
+                </Drawer>
                 <Modal  
                     ref="modal"
                     visible={this.state.editMenuVisible}
