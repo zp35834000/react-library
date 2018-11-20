@@ -223,22 +223,20 @@ class Menu extends React.Component{
           rowSelection={rowSelection} 
           dataSource={data}>
         </Table>
-        <Modal  
-          ref="modal"
-          visible={this.state.editMenuVisible}
-          title="添加菜单" 
-          onOk={this.handleOk} 
-          onCancel={this.closeEditWindow}
-          footer={[
-            <Button key="back" type="ghost" size="large" onClick={this.closeEditWindow}>返 回</Button>,
-            <Button key="submit" type="primary" size="large" loading={this.state.loading} onClick={this.submitForm}>
-                提 交
-            </Button>
-          ]}
-          bodyStyle={{height:'400px'}}
-          width='700px'
-        >
-          <EditMenu onRef={this.onRef} defaultEditRecord={this.state.eidtRecord}></EditMenu>
+        <Modal  ref="modal"
+                visible={this.state.editMenuVisible}
+                title="添加菜单" 
+                onOk={this.handleOk} 
+                onCancel={this.closeEditWindow}
+                footer={[
+                <Button key="back" type="ghost" size="large" onClick={this.closeEditWindow}>返 回</Button>,
+                <Button key="submit" type="primary" size="large" loading={this.state.loading} onClick={this.submitForm}>
+                    提 交
+                </Button>
+                ]}
+                bodyStyle={{height:'400px'}}
+                width='700px'>
+            <EditMenu onRef={this.onRef} defaultEditRecord={this.state.eidtRecord}></EditMenu>
         </Modal>
       </MainPage>
     )
@@ -246,6 +244,12 @@ class Menu extends React.Component{
 }
 
 
+function mapStateToProps(state){
+  const {menuKey} = state;
+  return {
+    reduxMenuKey: menuKey
+  }
+}
 
 function mapDispatchToProps(dispatch, ownProps){
   return {

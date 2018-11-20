@@ -1,14 +1,13 @@
 import React from 'react'
 import axios from 'axios'
-import {Table,Button, Icon, Modal, Tree, Drawer} from 'antd'
+import {Table,Button, Icon, Modal} from 'antd'
 import {connect} from 'react-redux'
 
 import {menuSet} from '../../redux/actions/common'
 import MainPage from '../../component/mainPage'
-import CustomIcon from '../../component/icon'
 import EditRole from './editRole'
+import RoleMenuRel from './EditRoleMenuRel'
 
-const TreeNode = Tree.TreeNode;
 
 
 
@@ -27,7 +26,8 @@ class Role extends React.Component{
             // 选中的列key值集合
             selectedRowKeys: [],
             // 设置用户菜单关系抽屉界面是否显示
-            roleMenuRelDrawn: true
+            roleMenuRelDrawn: false,
+            editRoleMenuRelRole: {}
         }
 
         this.props.dispatch(menuSet(this.state.menuKey));
@@ -41,6 +41,7 @@ class Role extends React.Component{
         this.openBlankEditWindow = this.openBlankEditWindow.bind(this);
         this.deleteSelectedRows = this.deleteSelectedRows.bind(this);
         this.toogleRoleMenuRelDrawn = this.toogleRoleMenuRelDrawn.bind(this);
+        this.editRoleMenuRel = this.editRoleMenuRel.bind(this);
     }
     
     componentWillMount(){
@@ -82,6 +83,12 @@ class Role extends React.Component{
             eidtRecord: record
         })
         this.openEditWindow();
+    }
+
+    // 编辑角色权限
+    editRoleMenuRel(record){
+        this.setState({editRoleMenuRelRole: record});
+        this.toogleRoleMenuRelDrawn();
     }
 
     onRef(ref){
@@ -166,7 +173,15 @@ class Role extends React.Component{
             {
                 title: '操作',
                 dataIndex: 'operation_col',
-                render: (text, record, index) => <a onClick={() =>_this.editRole(record)}><Icon type="edit" /></a>
+                render: (text, record, index) =>{
+
+                    return (
+                        <div>
+                            <a onClick={() =>_this.editRole(record)}><Icon type="edit" /></a>
+                            <a onClick={() =>_this.editRoleMenuRel(record)}><Icon type="edit" /></a>
+                        </div>
+                    )
+                } 
             }
         ];
 
@@ -199,29 +214,13 @@ class Role extends React.Component{
                     dataSource={this.state.data}>
                 >
                 </Table>
-                <Drawer
-                    visible={this.state.roleMenuRelDrawn}
-                    width={300}
-                    onClose={this.toogleRoleMenuRelDrawn}
-                    placement="right"
-                    handler={
-                      <div >
-                        <Icon
-                          type={this.state.roleMenuRelDrawn ? 'close' : 'setting'}
-                          style={{
-                            color: '#fff',
-                            fontSize: 20,
-                          }}
-                        />
-                      </div>
-                    }
-                    onHandleClick={this.toogleRoleMenuRelDrawn}
-                    style={{
-                      zIndex: 999,
-                    }}
+                <RoleMenuRel
+                    roleMenuRelDrawn = {this.state.roleMenuRelDrawn}
+                    toogleRoleMenuRelDrawn = {this.toogleRoleMenuRelDrawn}
+                    editRoleMenuRelRole = {this.state.editRoleMenuRelRole}
                 >
-                    
-                </Drawer>
+                </RoleMenuRel>
+
                 <Modal  
                     ref="modal"
                     visible={this.state.editMenuVisible}
