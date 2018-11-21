@@ -189,3 +189,16 @@ export var getParentMenuKey = Mock.mock('/menuController/getParentMenuKey', func
     let parentKeyArr = getParentKeyAction([], selectMenu)
     return parentKeyArr;
 })
+
+// 获得所有有子集menu的menu key值集合
+export var getMenuHasChidrenAction = Mock.mock('/menuController/getMenuHasChidrenAction', function(options){
+    let menuHasChidren = [];
+    for (let i = 0; i < allMenus.length; i++) {
+        const menu = allMenus[i];
+        if(menu.parentId != undefined && menuHasChidren.indexOf(menu.parentId) == -1){
+            menuHasChidren.push(menu.parentId);
+        }
+    }
+
+    return menuHasChidren;
+})

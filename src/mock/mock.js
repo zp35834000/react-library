@@ -2,6 +2,7 @@ import Mock from 'mockjs'
 import {} from './mockData/menu'
 import {} from './mockData/icon'
 import {} from './mockData/role'
+import {} from './mockData/roleMenuRel'
 
 Mock.mock( '/user', function(options){
     console.log(options);

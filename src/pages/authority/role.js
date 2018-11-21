@@ -42,6 +42,7 @@ class Role extends React.Component{
         this.deleteSelectedRows = this.deleteSelectedRows.bind(this);
         this.toogleRoleMenuRelDrawn = this.toogleRoleMenuRelDrawn.bind(this);
         this.editRoleMenuRel = this.editRoleMenuRel.bind(this);
+        this.onRoleMenuRelRef = this.onRoleMenuRelRef.bind(this);
     }
     
     componentWillMount(){
@@ -51,6 +52,7 @@ class Role extends React.Component{
     // 重新设置抽屉的显示与否
     toogleRoleMenuRelDrawn(){
         const ifRoleMenuRelDrawn = this.state.roleMenuRelDrawn;
+        this.roleMenuRelRed.setDefaultCheckedKeys();
         this.setState({roleMenuRelDrawn: !ifRoleMenuRelDrawn});
     }
 
@@ -95,6 +97,10 @@ class Role extends React.Component{
         this.childForm = ref;
     }
 
+
+    onRoleMenuRelRef(ref){
+        this.roleMenuRelRed = ref;
+    }
 
     // 执行删除操作
     deleteSelectedRows(){
@@ -218,6 +224,7 @@ class Role extends React.Component{
                     roleMenuRelDrawn = {this.state.roleMenuRelDrawn}
                     toogleRoleMenuRelDrawn = {this.toogleRoleMenuRelDrawn}
                     editRoleMenuRelRole = {this.state.editRoleMenuRelRole}
+                    onRoleMenuRelRef = {this.onRoleMenuRelRef}
                 >
                 </RoleMenuRel>
 
