@@ -113,9 +113,11 @@ class MenuTree extends React.Component {
         onCheck={this.onCheck}
         checkedKeys={this.state.checkedKeys}
         onSelect={this.onSelect}
-        selectedKeys={this.state.selectedKeys}
+        selectedKeys={['01']}
         defaultExpandParent = {true}
         defaultSelectedKeys = {this.state.defaultSelectedKeys}
+        defaultExpandAll = {true}
+        defaultCheckedKeys = {['01']}
       >
         {this.renderTreeNodes(this.state.menuTreeData)}
       </Tree>
