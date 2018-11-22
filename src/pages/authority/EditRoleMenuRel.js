@@ -52,13 +52,17 @@ class MenuTree extends React.Component {
 
   // 获得默认权限
   setDefaultCheckedKeys = () => {
+    this.setState({ checkedKeys: ['01'] });
 
     const _this = this;
     axios.post('/roleMenuController/getAllRoleMenu',{
       roleId: this.props.editRoleMenuRelRole.key
     }).then(function (response) {
-      _this.setState({selectedKeys: response.data});
+      // console.log(this.props.editRoleMenuRelRole.key);
+      _this.setState({checkedKeys: response.data});
+      // _this.setState({checkedKeys: ['01']});
       _this.setState({defaultCheckedKeys: response.data});
+
     }).catch(function (error) {
         console.log(error);
     });
@@ -111,13 +115,14 @@ class MenuTree extends React.Component {
         expandedKeys={this.state.expandedKeys}
         autoExpandParent={this.state.autoExpandParent}
         onCheck={this.onCheck}
+        // checkedKeys={this.state.checkedKeys}
         checkedKeys={this.state.checkedKeys}
         onSelect={this.onSelect}
-        selectedKeys={['01']}
+        selectedKeys={[]}
         defaultExpandParent = {true}
         defaultSelectedKeys = {this.state.defaultSelectedKeys}
         defaultExpandAll = {true}
-        defaultCheckedKeys = {['01']}
+        defaultCheckedKeys = {[]}
       >
         {this.renderTreeNodes(this.state.menuTreeData)}
       </Tree>
