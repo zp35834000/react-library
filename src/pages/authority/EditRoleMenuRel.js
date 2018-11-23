@@ -4,14 +4,13 @@ import axios from 'axios'
 
 const TreeNode = Tree.TreeNode;
 
-class MenuTree extends React.Component {
+class RoleMenuRel extends React.Component{
 
 
   state = {
     expandedKeys: [],
     autoExpandParent: true,
     checkedKeys: ['01'],
-    selectedKeys: [],
     menuTreeData: [],
     defaultCheckedKeys: []
   }
@@ -20,13 +19,10 @@ class MenuTree extends React.Component {
   componentWillMount(){
     this.loadTreeData();
     this.props.onRoleMenuRelRef(this);
-    this.getExpandedKeys();
   }
 
   onExpand = (expandedKeys) => {
     console.log('onExpand', expandedKeys);
-    // if not set autoExpandParent to false, if children expanded, parent can not collapse.
-    // or, you can remove all expanded children keys.
     this.setState({
       expandedKeys,
       autoExpandParent: false,
@@ -35,8 +31,7 @@ class MenuTree extends React.Component {
     
   }
 
-  onCheck = (checkedKeys) => {
-    console.log('onCheck', checkedKeys);
+  onCheck = (checkedKeys, e) => {
     this.setState({ checkedKeys });
   }
 
@@ -62,20 +57,9 @@ class MenuTree extends React.Component {
 
   }
 
-  getExpandedKeys(){
-    const _this = this;
-    axios.post('/menuController/getMenuHasChidrenAction',{
-      params: {
-      }
-    }).then(function (response) {
-      _this.setState({expandedKeys: response.data});
-    }).catch(function (error) {
-        console.log(error);
-    });
-  }
 
   // 加载权限树需要的数据
-  loadTreeData(){
+  loadTreeData = () => {
     const _this = this;
     axios.post('/menuController/getMenu',{
       params: {
@@ -99,77 +83,99 @@ class MenuTree extends React.Component {
       return <TreeNode title={item.name} key={item.key} />;
     });
   }
+  
+  // 提交修改信息
+  submit = () =>{
+    const _this = this;
+    const defaultCheckedKeys = this.state.defaultCheckedKeys;
+    const checkedKeys = this.state.checkedKeys;
+    // console.log('原有权限', this.state.defaultCheckedKeys);
+    // console.log('现有权限', this.state.checkedKeys);
+    // 需要删除的角色权限
+    let delRoleMenuKeys = [];
+    for (let i = 0; i < defaultCheckedKeys.length; i++) {
+      const defaultCheckedKey = defaultCheckedKeys[i];
+      if(checkedKeys.indexOf(defaultCheckedKey) === -1){
+        delRoleMenuKeys.push(defaultCheckedKey);
+      }
+    }
+    // 需要增加的角色权限
+    let addRoleMenuKeys = [];
+    for (let i = 0; i < checkedKeys.length; i++) {
+      const checkedKey = checkedKeys[i];
+      if(defaultCheckedKeys.indexOf(checkedKey) === -1){
+        addRoleMenuKeys.push(checkedKey);
+      }
+    }
 
-  render() {
-    return (
-      <Tree
-        checkable
-        onExpand={this.onExpand}
-        expandedKeys={this.state.expandedKeys}
-        autoExpandParent={this.state.autoExpandParent}
-        onCheck={this.onCheck}
-        // checkedKeys={this.state.checkedKeys}
-        checkedKeys={this.state.checkedKeys}
-        onSelect={this.onSelect}
-        selectedKeys={[]}
-        defaultExpandParent = {true}
-        defaultSelectedKeys = {this.state.defaultSelectedKeys}
-        defaultExpandAll = {true}
-        defaultCheckedKeys = {[]}
-      >
-        {this.renderTreeNodes(this.state.menuTreeData)}
-      </Tree>
-    );
+
+    axios.post('/roleMenuController/delRoleMenu',{
+      delKeys: delRoleMenuKeys,
+      roleKey: this.props.editRoleMenuRelRole.key
+    }).then(function (response) {
+
+    }).catch(function (error) {
+        console.log(error);
+    });
+
+    axios.post('/roleMenuController/addRoleMenu',{
+      addKeys: addRoleMenuKeys,
+      roleKey: this.props.editRoleMenuRelRole.key
+    }).then(function (response) {
+
+    }).catch(function (error) {
+        console.log(error);
+    });
+
+
+    this.props.toogleRoleMenuRelDrawn();
   }
-}
 
-class RoleMenuRel extends React.Component{
+  render(){
 
-    constructor(props){
-        super(props);
-        
-    }
+      return (
+          
+          <Drawer
+              visible={this.props.roleMenuRelDrawn}
+              width={300}
+              onClose={this.props.toogleRoleMenuRelDrawn}
+              placement="right"
+              handler={
+                  <div >
+                  <Icon
+                      type={this.props.roleMenuRelDrawn ? 'close' : 'setting'}
+                      style={{
+                          color: '#fff',
+                          fontSize: 20,
+                      }}
+                  />
+                  </div>
+              }
+              onHandleClick={this.props.toogleRoleMenuRelDrawn}
+              style={{
+                  zIndex: 999,
+              }}
+          >
+              <h2>{this.props.editRoleMenuRelRole.name}权限信息</h2>
 
-    // 提交修改信息
-    submit(){
-
-    }
-
-    render(){
-
-        return (
-            
-            <Drawer
-                visible={this.props.roleMenuRelDrawn}
-                width={300}
-                onClose={this.props.toogleRoleMenuRelDrawn}
-                placement="right"
-                handler={
-                    <div >
-                    <Icon
-                        type={this.props.roleMenuRelDrawn ? 'close' : 'setting'}
-                        style={{
-                            color: '#fff',
-                            fontSize: 20,
-                        }}
-                    />
-                    </div>
-                }
-                onHandleClick={this.props.toogleRoleMenuRelDrawn}
-                style={{
-                    zIndex: 999,
-                }}
-            >
-                <h2>{this.props.editRoleMenuRelRole.name}权限信息</h2>
-                <MenuTree
-                  editRoleMenuRelRole = {this.props.editRoleMenuRelRole}
-                  onRoleMenuRelRef = {this.props.onRoleMenuRelRef}
+                <Tree
+                  checkable
+                  onExpand={this.onExpand}
+                  expandedKeys={this.state.expandedKeys}
+                  autoExpandParent={this.state.autoExpandParent}
+                  onCheck={this.onCheck}
+                  checkedKeys={this.state.checkedKeys}
+                  onSelect={this.onSelect}
+                  // selectedKeys={[]}
+                  defaultExpandParent = {true}
+                  defaultExpandAll = {true}
                 >
-                </MenuTree>
-                <Button type="primary" onClick={this.submit}>提交</Button>
-            </Drawer>
-        )
-    }
+                  {this.renderTreeNodes(this.state.menuTreeData)}
+                </Tree>
+              <Button type="primary" onClick={this.submit}>提交</Button>
+          </Drawer>
+      )
+  }
 }
 
 

@@ -186,7 +186,8 @@ class Role extends React.Component{
                     return (
                         <div>
                             <a onClick={() =>_this.editRole(record)}><Icon type="edit" /></a>
-                            <a onClick={() =>_this.editRoleMenuRel(record)}><Icon type="edit" /></a>
+                            &nbsp;&nbsp;&nbsp;
+                            <a onClick={() =>_this.editRoleMenuRel(record)}><Icon type="credit-card" /></a>
                         </div>
                     )
                 } 
