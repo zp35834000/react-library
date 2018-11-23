@@ -89,8 +89,10 @@ class Role extends React.Component{
 
     // 编辑角色权限
     editRoleMenuRel(record){
+        // 设置编辑的角色id
         this.setState({editRoleMenuRelRole: record});
-        this.toogleRoleMenuRelDrawn();
+        // 调用设置默认角色权限信息
+        this.roleMenuRelRed.setDefaultCheckedKeys(this.toogleRoleMenuRelDrawn);
     }
 
     onRef(ref){

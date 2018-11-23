@@ -13,19 +13,14 @@ class MenuTree extends React.Component {
     checkedKeys: ['01'],
     selectedKeys: [],
     menuTreeData: [],
-    defaultSelectedKeys: ['01']
+    defaultCheckedKeys: []
   }
 
 
   componentWillMount(){
     this.loadTreeData();
     this.props.onRoleMenuRelRef(this);
-    // console.log(this.props.onRoleMenuRelRef);
     this.getExpandedKeys();
-    // if(this.props.editRoleMenuRelRole){
-
-      this.setDefaultCheckedKeys();
-    // }
   }
 
   onExpand = (expandedKeys) => {
@@ -51,17 +46,15 @@ class MenuTree extends React.Component {
   }
 
   // 获得默认权限
-  setDefaultCheckedKeys = () => {
-    this.setState({ checkedKeys: ['01'] });
-
+  setDefaultCheckedKeys = (toogleRoleMenuRelDrawn) => {
     const _this = this;
     axios.post('/roleMenuController/getAllRoleMenu',{
       roleId: this.props.editRoleMenuRelRole.key
     }).then(function (response) {
-      // console.log(this.props.editRoleMenuRelRole.key);
       _this.setState({checkedKeys: response.data});
-      // _this.setState({checkedKeys: ['01']});
       _this.setState({defaultCheckedKeys: response.data});
+      // 打开抽屉div
+      toogleRoleMenuRelDrawn();
 
     }).catch(function (error) {
         console.log(error);
