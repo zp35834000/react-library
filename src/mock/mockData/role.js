@@ -6,7 +6,8 @@
 import Mock from 'mockjs'
 
 import {guid} from '../util'
-let allRoles = [
+
+export let allRoles = [
     {name: '管理员', key: '0'},
     {name: '普通用户', key: '1'}
 ]

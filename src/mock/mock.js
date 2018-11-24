@@ -3,6 +3,8 @@ import {} from './mockData/menu'
 import {} from './mockData/icon'
 import {} from './mockData/role'
 import {} from './mockData/roleMenuRel'
+import {} from './mockData/User'
+import {} from './mockData/UserRole'
 
 Mock.mock( '/user', function(options){
     console.log(options);
