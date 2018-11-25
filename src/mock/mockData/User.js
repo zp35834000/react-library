@@ -21,7 +21,7 @@ export var getAllUserAction = Mock.mock('/userController/getAllUser', function(o
                 break;
             }
         }
-        userRoles.push(userRole)
+        userRoles.push(userRoleWithName)
     }
 
     for (let i = 0; i < allUser.length; i++) {

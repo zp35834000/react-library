@@ -12,7 +12,9 @@ class User extends React.Component{
         menuKey: '02',
         selectedRowKeyArr: [],
         editRecord: {},
-        data: []
+        data: [],
+        editMenuVisible: false,
+        eidtRecord: {}
     }
 
 
@@ -21,9 +23,36 @@ class User extends React.Component{
         this.loadUserData();
     }
 
+    // 打开编辑窗口
+    openEditWindow = () =>{
+        this.setState({editMenuVisible: true});
+    }
+
+    // 添加角色操作
+    openBlankEditWindow(){
+        let blankEidtRecord = {
+            // 编辑类型，分为add和edit，add为添加，edit为编辑原类型，默认为添加
+            editType: 'add'
+        };
+        this.setState({eidtRecord: blankEidtRecord});
+        this.openEditWindow();
+    }
+
+
+    // 关闭编辑窗口
+    closeEditWindow= () =>{
+        this.setState({editMenuVisible: false});
+        // 重置所有输入框值
+        // this.childForm.props.form.resetFields();
+    }
+
     // 编辑用户信息
     editUser = (record) =>{
-
+        record.editType = 'edit';
+        this.setState({
+            eidtRecord: record
+        })
+        this.openEditWindow();
     }
     
     // 加载用户信息
@@ -44,10 +73,21 @@ class User extends React.Component{
         const columns = [
             {title: '用户名', dataIndex: 'username'},
             {title: '姓名', dataIndex: 'name'},
-            {title: '性别', dataIndex: 'sex'},
+            {title: '性别', dataIndex: 'sex', render: function(text, record, index){
+                if(text === '1'){
+                    return '男'
+                }
+                if(text === '0'){
+                    return '女'
+                }
+            }},
             {title: '电话', dataIndex: 'phone'},
             {title: '地址', dataIndex: 'address'},
-            {title: '角色', dataIndex: 'roleName'},
+            {title: '角色', dataIndex: 'roleName', render: function(text){
+                // console.log(text);
+                return text.substring(0, text.length-1);
+                // return '111';
+            }},
             {
                 title: '操作',
                 dataIndex: 'operation_col',
@@ -79,6 +119,15 @@ class User extends React.Component{
 
         return (
             <MainPage   history={this.props.history}>
+
+                <Button type="primary" onClick={this.openBlankEditWindow}>
+                    <Icon type="plus" />添加用户
+                </Button>
+                &nbsp; &nbsp; &nbsp;
+                <Button type="primary" onClick={this.deleteSelectedRows}>
+                    <Icon type="delete" />删除选中用户
+                </Button>
+
                 <Table
                     pagination = {false}
                     bordered = {true}
