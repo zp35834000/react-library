@@ -6,6 +6,7 @@ import {connect} from 'react-redux'
 
 import {menuSet} from '../../redux/actions/common'
 import MainPage from '../../component/mainPage'
+import EditUser from './EditUser'
 
 class User extends React.Component{
     state = {
@@ -23,6 +24,9 @@ class User extends React.Component{
         this.loadUserData();
     }
 
+    onRef = (ref) => {
+        this.childForm = ref;
+    }
     // 打开编辑窗口
     openEditWindow = () =>{
         this.setState({editMenuVisible: true});
@@ -95,7 +99,7 @@ class User extends React.Component{
 
                     return (
                         <div>
-                            <a onClick={() =>_this.editUser()}><Icon type="edit" /></a>
+                            <a onClick={() =>_this.editUser(record)}><Icon type="edit" /></a>
                         </div>
                     )
                 } 
@@ -135,7 +139,21 @@ class User extends React.Component{
                     rowSelection={rowSelection} 
                     dataSource={this.state.data}>
                 </Table>
-
+                <Modal  ref="modal"
+                        visible={this.state.editMenuVisible}
+                        title="添加菜单" 
+                        onOk={this.handleOk} 
+                        onCancel={this.closeEditWindow}
+                        footer={[
+                            <Button key="back" type="ghost" size="large" onClick={this.closeEditWindow}>返 回</Button>,
+                            <Button key="submit" type="primary" size="large" loading={this.state.loading} onClick={this.submitForm}>
+                                提 交
+                            </Button>
+                        ]}
+                        bodyStyle={{height:'700px'}}
+                        width='700px'>
+                    <EditUser onRef={this.onRef} defaultEditRecord={this.state.eidtRecord}></EditUser>
+                </Modal>
             </MainPage>
         )
     }
