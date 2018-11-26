@@ -33,7 +33,7 @@ class User extends React.Component{
     }
 
     // 添加角色操作
-    openBlankEditWindow(){
+    openBlankEditWindow = ()=>{
         let blankEidtRecord = {
             // 编辑类型，分为add和edit，add为添加，edit为编辑原类型，默认为添加
             editType: 'add'
@@ -141,7 +141,7 @@ class User extends React.Component{
                 </Table>
                 <Modal  ref="modal"
                         visible={this.state.editMenuVisible}
-                        title="添加菜单" 
+                        title="添加用户" 
                         onOk={this.handleOk} 
                         onCancel={this.closeEditWindow}
                         footer={[
@@ -150,7 +150,7 @@ class User extends React.Component{
                                 提 交
                             </Button>
                         ]}
-                        bodyStyle={{height:'700px'}}
+                        bodyStyle={{height:'500px'}}
                         width='700px'>
                     <EditUser onRef={this.onRef} defaultEditRecord={this.state.eidtRecord}></EditUser>
                 </Modal>

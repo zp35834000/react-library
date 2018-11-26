@@ -1,30 +1,38 @@
-import { Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete } from 'antd'
+import { Form, Input, Cascader, AutoComplete,Select } from 'antd'
 import React from 'react'
+import axios from 'axios'
+import { runInThisContext } from 'vm';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const AutoCompleteOption = AutoComplete.Option;
 
 const residences = [{
-  value: 'zhejiang',
-  label: 'Zhejiang',
+  value: 'beijing',
+  label: '北京',
   children: [{
-    value: 'hangzhou',
-    label: 'Hangzhou',
+    value: 'beijingshi',
+    label: '北京市',
     children: [{
-      value: 'xihu',
-      label: 'West Lake',
+      value: 'haidian',
+      label: '海淀',
+    },{
+      value: 'chaoyang',
+      label: '朝阳',
     }],
   }],
 }, {
-  value: 'jiangsu',
-  label: 'Jiangsu',
+  value: 'hubeisheng',
+  label: '湖北',
   children: [{
-    value: 'nanjing',
-    label: 'Nanjing',
+    value: 'wuhanshi',
+    label: '武汉市',
     children: [{
-      value: 'zhonghuamen',
-      label: 'Zhong Hua Men',
+      value: 'hankou',
+      label: '汉口',
+    },{
+      value: 'wuchang',
+      label: '武昌',
     }],
   }],
 }];
@@ -33,10 +41,13 @@ class RegistrationForm extends React.Component {
   state = {
     confirmDirty: false,
     autoCompleteResult: [],
+    // 所有角色数组
+    roleOptions: []
   };
 
   componentDidMount(){
       this.props.onRef(this);
+      this.initRoleOptionData();
   }
 
   handleSubmit = (e) => {
@@ -63,6 +74,17 @@ class RegistrationForm extends React.Component {
     } else {
       callback();
     }
+  }
+
+  // 初始化角色选择下拉框
+  initRoleOptionData = () => {
+    const _this = this;
+    axios.post('/roleController/getAllRoles',{
+    }).then(function (response) {
+        _this.setState({roleOptions: response.data});
+    }).catch(function (error) {
+        console.log(error);
+    });
   }
 
   validateToNextPassword = (rule, value, callback) => {
@@ -128,23 +150,55 @@ class RegistrationForm extends React.Component {
 
     return (
       <Form onSubmit={this.handleSubmit}>
+        
+
         <FormItem
           {...formItemLayout}
-          label="E-mail"
+          label="用户名"
         >
-          {getFieldDecorator('email', {
+          {getFieldDecorator('username', {
             rules: [{
-              type: 'email', message: 'The input is not valid E-mail!',
-            }, {
-              required: true, message: 'Please input your E-mail!',
+              required: true, message: '请输入用户名!',
             }],
           })(
             <Input />
           )}
         </FormItem>
+
         <FormItem
           {...formItemLayout}
-          label="Password"
+          label="姓名"
+        >
+          {getFieldDecorator('name', {
+            rules: [{
+              required: true, message: '请输入真实姓名!',
+            }],
+          })(
+            <Input />
+          )}
+        </FormItem>
+
+        <FormItem
+          {...formItemLayout}
+          label="性别"
+        >
+          {getFieldDecorator('sex', {
+            rules: [{
+              required: true, message: '请选择性别!',
+            }],
+          })(
+            <Select >
+              <Option value="0">女</Option>
+              <Option value="1">男</Option>
+            </Select>
+          )}
+        </FormItem>
+
+        
+
+        <FormItem
+          {...formItemLayout}
+          label="密码"
         >
           {getFieldDecorator('password', {
             rules: [{
@@ -158,7 +212,7 @@ class RegistrationForm extends React.Component {
         </FormItem>
         <FormItem
           {...formItemLayout}
-          label="Confirm Password"
+          label="请确认密码"
         >
           {getFieldDecorator('confirm', {
             rules: [{
@@ -170,37 +224,22 @@ class RegistrationForm extends React.Component {
             <Input type="password" onBlur={this.handleConfirmBlur} />
           )}
         </FormItem>
+
         <FormItem
           {...formItemLayout}
-          label={(
-            <span>
-              Nickname&nbsp;
-              <Tooltip title="What do you want others to call you?">
-                <Icon type="question-circle-o" />
-              </Tooltip>
-            </span>
-          )}
+          label="地址"
         >
-          {getFieldDecorator('nickname', {
-            rules: [{ required: true, message: 'Please input your nickname!', whitespace: true }],
-          })(
-            <Input />
-          )}
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="Habitual Residence"
-        >
-          {getFieldDecorator('residence', {
+          {getFieldDecorator('address', {
             initialValue: ['zhejiang', 'hangzhou', 'xihu'],
             rules: [{ type: 'array', required: true, message: 'Please select your habitual residence!' }],
           })(
             <Cascader options={residences} />
           )}
         </FormItem>
+
         <FormItem
           {...formItemLayout}
-          label="Phone Number"
+          label="电话"
         >
           {getFieldDecorator('phone', {
             rules: [{ required: true, message: 'Please input your phone number!' }],
@@ -208,50 +247,27 @@ class RegistrationForm extends React.Component {
             <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
           )}
         </FormItem>
+
         <FormItem
           {...formItemLayout}
-          label="Website"
+          label="角色"
         >
-          {getFieldDecorator('website', {
-            rules: [{ required: true, message: 'Please input website!' }],
+          {getFieldDecorator('roleName', {
+            rules: [{ required: true, message: '请选择用户角色!' }],
+            initialValue: ['0', '1']
           })(
-            <AutoComplete
-              dataSource={websiteOptions}
-              onChange={this.handleWebsiteChange}
-              placeholder="website"
+            <Select
+              multiple
+              style={{ width: '100%' }}
+              placeholder="请选择角色"
             >
-              <Input />
-            </AutoComplete>
+              {this.state.roleOptions.map(function(role){
+                return <Option key={role.key}>{role.name}</Option>
+              })}
+            </Select>
           )}
         </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="Captcha"
-          extra="We must make sure that your are a human."
-        >
-          <Row gutter={8}>
-            <Col span={12}>
-              {getFieldDecorator('captcha', {
-                rules: [{ required: true, message: 'Please input the captcha you got!' }],
-              })(
-                <Input />
-              )}
-            </Col>
-            <Col span={12}>
-              <Button>Get captcha</Button>
-            </Col>
-          </Row>
-        </FormItem>
-        <FormItem {...tailFormItemLayout}>
-          {getFieldDecorator('agreement', {
-            valuePropName: 'checked',
-          })(
-            <Checkbox>I have read the <a href="">agreement</a></Checkbox>
-          )}
-        </FormItem>
-        <FormItem {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit">Register</Button>
-        </FormItem>
+
       </Form>
     );
   }
