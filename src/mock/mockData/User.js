@@ -1,12 +1,59 @@
 // 用户
 import Mock from 'mockjs'
+
 import {allUserRole} from './UserRole'
 import {allRoles} from './role'
+import {guid} from '../util/index'
+import {addUserRole, delUserRoleByUserKey} from './UserRole'
 let allUser = [
-    {username: 'zp', name: 'jerry', sex: '1', phone: '11213', address: '北京', password: '111111', key: '0'},
-    {username: 'wyy', name: 'tom', sex: '0', phone: '11213', address: '武汉', password: '111111', key: '1'},
+    {username: 'zp', name: 'jerry', sex: '1', phone: '86-3473', 
+        address: ["beijing", "beijingshi", "haidian"], 
+        password: '111111', key: '0'
+    },
+    {username: 'wyy', name: 'tom', sex: '0', phone: '87-9766', 
+        address: ["hubeisheng", "wuhanshi", "wuchang"], 
+        password: '111111', key: '1'
+    },
 ]
 
+
+
+// 地址信息
+export const addressArr = [
+    {value: 'beijing', label: '北京',children: [
+        {value: 'beijingshi', label: '北京市',children: [
+            {value: 'haidian', label: '海淀'},
+            {value: 'chaoyang', label: '朝阳'},
+        ]}
+    ]}, 
+    {value: 'hubeisheng', label: '湖北省', children: [
+        {value: 'wuhanshi', label: '武汉市', children: [
+            {value: 'hankou', label: '汉口'},
+            {value: 'wuchang', label: '武昌'}
+        ]}
+    ]}
+]
+
+/**根据地址label，获得详细地址信息 */
+function decodeAddress(addressValueArr, addressArr, addressLabel, matchIndex){
+    const addressValue = addressValueArr[matchIndex];
+    let belongAddressIndex = 0;
+    for (let j = 0; j < addressArr.length; j++) {
+        const address = addressArr[j];
+        if(addressValue === address.value){
+            addressLabel += address.label;
+            belongAddressIndex = j;
+            break;
+        }
+    }
+    if(addressArr[belongAddressIndex].children !== undefined && matchIndex < addressValueArr.length){
+        addressLabel += "-";
+        matchIndex++;
+        return decodeAddress(addressValueArr, addressArr[belongAddressIndex].children, addressLabel, matchIndex);
+    }else{
+        return addressLabel;
+    }
+}
 
 export var getAllUserAction = Mock.mock('/userController/getAllUser', function(options){
     let userRoles = [];
@@ -27,14 +74,53 @@ export var getAllUserAction = Mock.mock('/userController/getAllUser', function(o
     for (let i = 0; i < allUser.length; i++) {
         const user = allUser[i];
         let userTemp = Object.assign({roleName: ''} , user);
+        userTemp.roleArr = [];
         for (let j = 0; j < userRoles.length; j++) {
             const userRole = userRoles[j];
             if(userRole.userKey === userTemp.key){
-                userTemp.roleName += userRole.roleName+','
+                userTemp.roleName += userRole.roleName+',';
+                userTemp.roleArr.push(userRole.roleKey);
             }
         }
+        userTemp.addressValue = userTemp.address;
+        userTemp.address = decodeAddress(userTemp.address, addressArr, "", 0);
         resultUser.push(userTemp);
 
     }
     return resultUser;
+})
+
+/**添加用户 */
+export var addUserAction = Mock.mock('/userController/addUser', function(options){
+    let addedUser = JSON.parse(options.body);
+    const uid = guid();
+    addedUser.key = uid;
+    addedUser.phone = addedUser.prefix + '-' + addedUser.phone
+    allUser.push(addedUser);
+    const userRoleName = addedUser.roleName;
+    delete addedUser.roleName;
+    addUserRole(uid, userRoleName);
+})
+
+
+/**删除用户 */
+export var delUserAction = Mock.mock('/userController/delUser', function(options){
+    const delUserKeyArr = JSON.parse(options.body).selectedRowKeyArr;
+    for (let i = 0; i < delUserKeyArr.length; i++) {
+        const delUserKey = delUserKeyArr[i];
+        for (let j = 0; j < allUser.length; j++) {
+            const user = allUser[j];
+            if(user.key === delUserKey){
+                allUser.splice(j, 1);
+                break;
+            }
+        }
+        delUserRoleByUserKey(delUserKey);
+    }
+})
+
+/**编辑用户 */
+export var editUserAction = Mock.mock('/userController/editUser', function(options){
+    const editUser = JSON.parse(options.body);
+    console.log(editUser);
 })

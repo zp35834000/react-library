@@ -8,14 +8,15 @@ import {menuSet} from '../../redux/actions/common'
 import MainPage from '../../component/mainPage'
 import EditUser from './EditUser'
 
+
+
 class User extends React.Component{
     state = {
         menuKey: '02',
         selectedRowKeyArr: [],
         editRecord: {},
         data: [],
-        editMenuVisible: false,
-        eidtRecord: {}
+        editMenuVisible: false
     }
 
 
@@ -27,6 +28,43 @@ class User extends React.Component{
     onRef = (ref) => {
         this.childForm = ref;
     }
+
+    /**
+     * 提交用户表单
+     */
+    submitForm = () => {
+        let submitUser = this.childForm.handleSubmit();
+        const _this = this;
+        
+        // 关闭编辑窗口
+        if(submitUser !== false){
+            this.setState({editMenuVisible: false});
+
+            if(this.state.eidtRecord.editType === 'add'){
+
+                // 添加用户
+                axios.post('/userController/addUser',{
+                    ...submitUser
+                }).then(function (response) {
+                    _this.loadUserData();
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }else if(this.state.eidtRecord.editType === 'edit'){
+                // 编辑用户
+                submitUser.key = this.state.eidtRecord.key;
+                axios.post('/userController/editUser',{
+                    ...submitUser
+                }).then(function (response) {
+                    _this.loadUserData();
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+
+        }
+    }
+
     // 打开编辑窗口
     openEditWindow = () =>{
         this.setState({editMenuVisible: true});
@@ -47,7 +85,7 @@ class User extends React.Component{
     closeEditWindow= () =>{
         this.setState({editMenuVisible: false});
         // 重置所有输入框值
-        // this.childForm.props.form.resetFields();
+        this.childForm.props.form.resetFields();
     }
 
     // 编辑用户信息
@@ -66,6 +104,20 @@ class User extends React.Component{
 
         }).then(function (response) {
             _this.setState({data: response.data});
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    /**删除选中用户 */
+    deleteSelectedRows = () =>{
+        debugger;
+        const selectedRowKeyArr = this.state.selectedRowKeyArr;
+        const _this = this; 
+        axios.post('/userController/delUser',{
+            selectedRowKeyArr
+        }).then(function (response) {
+            _this.loadUserData();
         }).catch(function (error) {
             console.log(error);
         });
@@ -109,9 +161,9 @@ class User extends React.Component{
         // 选中信息
         const rowSelection = {
             onChange: (selectedRowKeyArr, selectedRows) => {
-                this.setState({selectedRowKeys: selectedRowKeyArr})
+                _this.setState({selectedRowKeyArr: selectedRowKeyArr})
                 // selectedRowKeys = selectedRowKeyArr;
-                // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                // console.log(`selectedRowKeys: ${selectedRowKeyArr}`, 'selectedRows: ', selectedRows);
             },
             onSelect: (record, selected, selectedRows) => {
                 // console.log(record, selected, selectedRows);
@@ -146,14 +198,15 @@ class User extends React.Component{
                         onCancel={this.closeEditWindow}
                         footer={[
                             <Button key="back" type="ghost" size="large" onClick={this.closeEditWindow}>返 回</Button>,
-                            <Button key="submit" type="primary" size="large" loading={this.state.loading} onClick={this.submitForm}>
+                            <Button key="submit" type="primary" size="large"  onClick={this.submitForm}>
                                 提 交
                             </Button>
                         ]}
-                        bodyStyle={{height:'500px'}}
+                        bodyStyle={{height:'600px'}}
                         width='700px'>
                     <EditUser onRef={this.onRef} defaultEditRecord={this.state.eidtRecord}></EditUser>
                 </Modal>
+
             </MainPage>
         )
     }

@@ -1,6 +1,5 @@
-import { Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete } from 'antd'
+import { Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete } from 'antd';
 import React from 'react'
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 const AutoCompleteOption = AutoComplete.Option;
@@ -35,15 +34,8 @@ class RegistrationForm extends React.Component {
     autoCompleteResult: [],
   };
 
-  componentDidMount(){
-      this.props.onRef(this);
-  }
-
   handleSubmit = (e) => {
-    if(e != undefined){
-
-        e.preventDefault();
-    }
+    e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
@@ -81,10 +73,6 @@ class RegistrationForm extends React.Component {
       autoCompleteResult = ['.com', '.org', '.net'].map(domain => `${value}${domain}`);
     }
     this.setState({ autoCompleteResult });
-  }
-
-  testFunction = () => {
-      console.log('innerRegist');
   }
 
   render() {
