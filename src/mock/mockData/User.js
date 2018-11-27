@@ -4,15 +4,15 @@ import Mock from 'mockjs'
 import {allUserRole} from './UserRole'
 import {allRoles} from './role'
 import {guid} from '../util/index'
-import {addUserRole, delUserRoleByUserKey} from './UserRole'
+import {addUserRole, delUserRoleByUserKey, delUserRoleByUserKeyRoleKey, getRoleByUserKey} from './UserRole'
 let allUser = [
     {username: 'zp', name: 'jerry', sex: '1', phone: '86-3473', 
         address: ["beijing", "beijingshi", "haidian"], 
-        password: '111111', key: '0'
+        password: '111111', key: 'zpkey'
     },
     {username: 'wyy', name: 'tom', sex: '0', phone: '87-9766', 
-        address: ["hubeisheng", "wuhanshi", "wuchang"], 
-        password: '111111', key: '1'
+        address: ["hubeisheng", "wuhanshi", "hankou"], 
+        password: '111111', key: 'wyyykey'
     },
 ]
 
@@ -99,6 +99,7 @@ export var addUserAction = Mock.mock('/userController/addUser', function(options
     allUser.push(addedUser);
     const userRoleName = addedUser.roleName;
     delete addedUser.roleName;
+    // 添加用户角色
     addUserRole(uid, userRoleName);
 })
 
@@ -122,5 +123,42 @@ export var delUserAction = Mock.mock('/userController/delUser', function(options
 /**编辑用户 */
 export var editUserAction = Mock.mock('/userController/editUser', function(options){
     const editUser = JSON.parse(options.body);
-    console.log(editUser);
+    // 获得用户原角色信息
+    let remoteRoleKeys = getRoleByUserKey(editUser.key);
+    let editUserRoleKeys = editUser.roleName;
+
+    editUser.phone = editUser.prefix + '-' + editUser.phone;
+    delete editUser.roleName;
+    // 首先编辑用户信息
+    for (let i = 0; i < allUser.length; i++) {
+        const user = allUser[i];
+        if(user.key === editUser.key){
+            allUser.splice(i, 1, editUser);
+            break;
+        }
+    }
+    
+    // 编辑用户角色信息
+    // 删除角色key
+    let delRoleKeys = [];
+    // 添加角色key
+    let addRoleKeys = [];
+    debugger;
+    for (let i = 0; i < remoteRoleKeys.length; i++) {
+        const remoteRoleKey = remoteRoleKeys[i];
+        if(editUserRoleKeys.indexOf(remoteRoleKey) === -1){
+            delRoleKeys.push(remoteRoleKey);
+        }
+    }
+
+    for (let i = 0; i < editUserRoleKeys.length; i++) {
+        const editUserRoleKey = editUserRoleKeys[i];
+        if(remoteRoleKeys.indexOf(editUserRoleKey) === -1){
+            addRoleKeys.push(editUserRoleKey);
+        }
+        
+    }
+    delUserRoleByUserKeyRoleKey(editUser.key, delRoleKeys);
+    addUserRole(editUser.key, addRoleKeys);
+    // console.log(editUser);
 })

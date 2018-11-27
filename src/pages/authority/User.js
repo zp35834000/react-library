@@ -36,7 +36,7 @@ class User extends React.Component{
         let submitUser = this.childForm.handleSubmit();
         const _this = this;
         
-        // 关闭编辑窗口
+        
         if(submitUser !== false){
             this.setState({editMenuVisible: false});
 
@@ -63,6 +63,8 @@ class User extends React.Component{
             }
 
         }
+        // 关闭编辑窗口
+        this.closeEditWindow();
     }
 
     // 打开编辑窗口

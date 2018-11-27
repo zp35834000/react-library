@@ -4,10 +4,22 @@ import Mock from 'mockjs'
 
 import {guid} from '../util/index'
 export let allUserRole = [
-    {userKey: '0', roleKey: '0', key: '0'},
-    {userKey: '0', roleKey: '1', key: '1'},
-    {userKey: '1', roleKey: '1', key: '2'}
+    {userKey: 'zpkey', roleKey: '0', key: '0'},
+    {userKey: 'zpkey', roleKey: '1', key: '1'},
+    {userKey: 'wyyykey', roleKey: '1', key: '2'}
 ]
+
+/**通过用户key获得roleKey集合 */
+export var getRoleByUserKey = (userKey) => {
+    let roleKeys = [];
+    for (let i = 0; i < allUserRole.length; i++) {
+        const userRole = allUserRole[i];
+        if(userRole.userKey === userKey){
+            roleKeys.push(userRole.roleKey);
+        }
+    }
+    return roleKeys;
+}
 
 /**添加用户角色 */
 export function addUserRole(userKey, roleKeyArr){
@@ -26,6 +38,21 @@ export function delUserRoleByUserKey(userKey) {
         const userRole = allUserRole[i];
         if(userRole.userKey === userKey){
             allUserRole.splice(i ,1);
+        }
+    }
+}
+
+/**删除用户指定角色 */
+export var delUserRoleByUserKeyRoleKey = (userKey, roleKeyArr) =>{
+    for (let i = 0; i < roleKeyArr.length; i++) {
+        const deleRoleKey = roleKeyArr[i];
+        for (let j = 0; j < allUserRole.length; j++) {
+            const userRole = allUserRole[j];
+            if(userRole.userKey === userKey 
+                && userRole.roleKey === deleRoleKey){
+                allUserRole.splice(j ,1);
+                break;
+            }
         }
     }
 }
