@@ -1,9 +1,10 @@
-import{MENU_KEY} from './type'
+import{MENU_KEY, USER_LOGIN} from './type'
 
-export function login(userName) {
+
+export function login(userKey) {
     return {
-        type: 'USER_LOGIN',
-        userName
+        type: USER_LOGIN,
+        userKey
     }
 }
 
@@ -12,4 +13,9 @@ export function menuSet(menuKey) {
         type: MENU_KEY,
         menuKey
     }
+}
+
+
+export function checkLogin() {
+    
 }
