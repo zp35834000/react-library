@@ -3,7 +3,7 @@ import Mock from 'mockjs'
 
 import {guid} from '../util'
 
-let allRoleMenu = [
+export let allRoleMenu = [
     {roleId: '0', menuId: '0', key: '0'},
     {roleId: '0', menuId: '00', key: '1'},
     {roleId: '0', menuId: '01', key: '2'},
@@ -16,7 +16,7 @@ let allRoleMenu = [
  * 根据角色id获得角色的所有权限
  * @param {角色id} roleId 
  */
-function getRoleMenuByRoleId(roleId){
+export function getRoleMenuByRoleId(roleId){
     let optRoleMenu = [];
     for (let i = 0; i < allRoleMenu.length; i++) {
         const element = allRoleMenu[i];

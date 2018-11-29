@@ -8,10 +8,12 @@ import Menu from '../pages/authority/menu'
 import Role from '../pages/authority/role'
 import User from '../pages/authority/User'
 
+import Login from '../pages/login/Login'
+
 const route = () => (
     <BrowserRouter>
         <div>
-            <Route exact path='/' component={Home}></Route>
+            <Route exact path='/' component={Login}></Route>
             <Route path='/antTest' component={AntTest}></Route>
             <Route path='/menu' component={Menu}></Route>
             <Route path='/role' component={Role}></Route>

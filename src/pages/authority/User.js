@@ -7,8 +7,8 @@ import {connect} from 'react-redux'
 import {menuSet} from '../../redux/actions/common'
 import MainPage from '../../component/mainPage'
 import EditUser from './EditUser'
-
-
+import {checkLogin} from '../../redux/actions/common'
+import {chechAuthor} from '../../util/authorUtil'
 
 class User extends React.Component{
     state = {
@@ -21,7 +21,16 @@ class User extends React.Component{
 
 
     componentWillMount(){
+        // 检验是否登录
+        chechAuthor(this.props.loginUserKey.userKey, 
+            this.state.menuKey, this.props.history);
+
         this.props.dispatch(menuSet(this.state.menuKey));
+        // this.props.dispatch(checkLogin('zp','123456')).then(
+        //     () => {
+        //         console.log(this.props.loginUserKey);
+        //     }
+        // );
         this.loadUserData();
     }
 
@@ -221,7 +230,14 @@ function mapDispatchToProps(dispatch, ownProps){
     }
 }
 
+
+function mapStateToProps(state, ownProps){
+    return {
+        loginUserKey: state.loginUserKey
+    }
+}
+
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(User);

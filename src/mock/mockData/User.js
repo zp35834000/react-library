@@ -2,17 +2,18 @@
 import Mock from 'mockjs'
 
 import {allUserRole} from './UserRole'
+import {getRoleMenuByRoleId} from './roleMenuRel'
 import {allRoles} from './role'
 import {guid} from '../util/index'
 import {addUserRole, delUserRoleByUserKey, delUserRoleByUserKeyRoleKey, getRoleByUserKey} from './UserRole'
 let allUser = [
     {username: 'zp', name: 'jerry', sex: '1', phone: '86-3473', 
         address: ["beijing", "beijingshi", "haidian"], 
-        password: '111111', key: 'zpkey'
+        password: '123456', key: 'zpkey'
     },
     {username: 'wyy', name: 'tom', sex: '0', phone: '87-9766', 
         address: ["hubeisheng", "wuhanshi", "hankou"], 
-        password: '111111', key: 'wyyykey'
+        password: '666666', key: 'wyyykey'
     },
 ]
 
@@ -161,4 +162,56 @@ export var editUserAction = Mock.mock('/userController/editUser', function(optio
     delUserRoleByUserKeyRoleKey(editUser.key, delRoleKeys);
     addUserRole(editUser.key, addRoleKeys);
     // console.log(editUser);
+})
+
+
+/**用户登录action */
+export const checkLogin = Mock.mock('/userController/checkLogin', function(options){
+    const checkedUser = JSON.parse(options.body);
+    const userName = checkedUser.userName;
+    const password = checkedUser.password;
+    // 检查结果
+    let checkResult = {
+        success: false,
+        userKey: ''
+    }
+    // 与所有用户进行对比
+    for (let i = 0; i < allUser.length; i++) {
+        const user = allUser[i];
+        if(user.username === userName && 
+            user.password === password){
+            checkResult.success = true;
+            checkResult.userKey = user.key;
+        }
+    }
+    return checkResult;
+})
+
+
+
+/**检验用户全选 */
+export const checkUserAuthor = Mock.mock('/userController/checkUserAuthor', function(options){
+    debugger;
+    let hasAuthor = false;
+    const parames = options.body;
+    const parameArr = parames.split('&');
+    const userKey = parameArr[0].split('=')[1];
+    const menuKey = parameArr[1].split('=')[1];
+    const roleKeys = getRoleByUserKey(userKey);
+    for (let i = 0; i < roleKeys.length; i++) {
+        if(hasAuthor){
+            break;
+        }
+        const roleKey = roleKeys[i];
+        const menuKeyArr = getRoleMenuByRoleId(roleKey);
+        for (let j = 0; j < menuKeyArr.length; j++) {
+            const menuKeyTemp = menuKeyArr[j];
+            if(menuKey === menuKeyTemp.menuId){
+                hasAuthor = true;
+                break;
+            }
+        }
+    }
+   
+    return hasAuthor;
 })
