@@ -21,7 +21,7 @@ class User extends React.Component{
 
 
     componentWillMount(){
-        // 检验是否登录
+        // 检验登录用户是否具备权限
         chechAuthor(this.props.loginUserKey.userKey, 
             this.state.menuKey, this.props.history);
 
