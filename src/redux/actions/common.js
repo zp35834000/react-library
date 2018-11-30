@@ -43,6 +43,8 @@ export function checkLogin(userName, password) {
         }).then(function(response){
             if(response.data.success){
                 dispatch(receiveLoginPosts(response.data.userKey));
+            }else{
+                dispatch(receiveLoginPosts(''))
             }
         })
     }

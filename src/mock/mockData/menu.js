@@ -1,6 +1,8 @@
 import Mock from 'mockjs'
 
 import {guid} from '../util'
+import {getRoleByUserKey} from './UserRole'
+import {getRoleMenuByRoleId} from './roleMenuRel'
 
 // 数据源
 let allMenus = [
@@ -85,6 +87,45 @@ function getMenuWithChildren(singleMenu){
 // 获得menu展示需要的数据个数，带有children属性
 function getAllMenuWithChildren(){
     let allMenusCopy = copyAllMenus();
+
+    let topMenus = allMenusCopy.filter(function(item){
+        return (item.parentId == undefined);
+    });
+
+    let menuWithChildren = topMenus.map(
+        menu => {
+            return getMenuWithChildren(menu);
+        }
+    )
+    return menuWithChildren;
+}
+
+/**通过userkey获得menu集合，并将结果组合成展示需要的带有children的数据类型 */
+function getMenuWithChildrenByUserKey(userKey){
+    let menuKeysTemp = [];
+    let allMenusCopy = [];
+    const roleKeys = getRoleByUserKey(userKey);
+    for (let i = 0; i < roleKeys.length; i++) {
+        const roleKey = roleKeys[i];
+        const menuKeys = getRoleMenuByRoleId(roleKey);
+        for (let j = 0; j < menuKeys.length; j++) {
+            const roleMenu = menuKeys[j];
+            if(menuKeysTemp.indexOf(roleMenu.menuId) === -1){
+                menuKeysTemp.push(roleMenu.menuId);
+            }
+        }
+    }
+
+    for (let i = 0; i < menuKeysTemp.length; i++) {
+        const menuKey = menuKeysTemp[i];
+        for (let j = 0; j < allMenus.length; j++) {
+            const menuObj = allMenus[j];
+            if(menuObj.key === menuKey){
+                allMenusCopy.push(Object.assign({}, menuObj));
+                break;
+            }
+        }
+    }
 
     let topMenus = allMenusCopy.filter(function(item){
         return (item.parentId == undefined);
@@ -201,4 +242,11 @@ export var getMenuHasChidrenAction = Mock.mock('/menuController/getMenuHasChidre
     }
 
     return menuHasChidren;
+})
+
+
+export var getMenuWithChildrenByUserKeyAction = Mock.mock('/menuController/getMenuByUserKey', function(options){
+    debugger;
+    const userKey = JSON.parse(options.body).userKey;
+    return getMenuWithChildrenByUserKey(userKey);
 })

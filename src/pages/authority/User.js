@@ -45,7 +45,7 @@ class User extends React.Component{
         let submitUser = this.childForm.handleSubmit();
         const _this = this;
         
-        
+
         if(submitUser !== false){
             this.setState({editMenuVisible: false});
 
@@ -185,7 +185,9 @@ class User extends React.Component{
         };
 
         return (
-            <MainPage   history={this.props.history}>
+            <MainPage   history={this.props.history}
+                        reduxMenuKey = {this.state.menuKey}
+            >
 
                 <Button type="primary" onClick={this.openBlankEditWindow}>
                     <Icon type="plus" />添加用户

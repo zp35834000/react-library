@@ -32,11 +32,12 @@ class RoleMenuRel extends React.Component{
   }
 
   onCheck = (checkedKeys, e) => {
+    console.log('checkedKeys', checkedKeys);
     this.setState({ checkedKeys });
   }
 
   onSelect = (selectedKeys, info) => {
-    console.log('onSelect', info);
+    console.log('onSelect', selectedKeys);
     this.setState({ selectedKeys });
   }
 
@@ -165,10 +166,10 @@ class RoleMenuRel extends React.Component{
                   autoExpandParent={this.state.autoExpandParent}
                   onCheck={this.onCheck}
                   checkedKeys={this.state.checkedKeys}
-                  onSelect={this.onSelect}
                   // selectedKeys={[]}
                   defaultExpandParent = {true}
                   defaultExpandAll = {true}
+                  checkStrictly = {false}
                 >
                   {this.renderTreeNodes(this.state.menuTreeData)}
                 </Tree>

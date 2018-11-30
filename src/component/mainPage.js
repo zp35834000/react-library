@@ -62,9 +62,8 @@ class mainPage extends React.Component {
   /** 加载菜单信息 */
   loadMenuData(){
     const _this = this;
-    axios.post('/menuController/getMenu',{
-      params: {
-      }
+    axios.post('/menuController/getMenuByUserKey',{
+      userKey: this.props.loginUserKey.userKey
     }).then(function (response) {
       _this.setState({menuData: response.data});
       _this.getMentItem();
@@ -160,9 +159,9 @@ class mainPage extends React.Component {
 
 
 function mapStateToProps(state){
-  const {menuKey} = state;
+  const {loginUserKey} = state;
   return {
-    reduxMenuKey: menuKey
+    loginUserKey
   }
 }
 
@@ -171,5 +170,3 @@ function mapStateToProps(state){
 export default connect(
   mapStateToProps
 )(mainPage);
-
-// export default mainPage;

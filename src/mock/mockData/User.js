@@ -144,7 +144,6 @@ export var editUserAction = Mock.mock('/userController/editUser', function(optio
     let delRoleKeys = [];
     // 添加角色key
     let addRoleKeys = [];
-    debugger;
     for (let i = 0; i < remoteRoleKeys.length; i++) {
         const remoteRoleKey = remoteRoleKeys[i];
         if(editUserRoleKeys.indexOf(remoteRoleKey) === -1){
@@ -191,7 +190,6 @@ export const checkLogin = Mock.mock('/userController/checkLogin', function(optio
 
 /**检验用户全选 */
 export const checkUserAuthor = Mock.mock('/userController/checkUserAuthor', function(options){
-    debugger;
     let hasAuthor = false;
     const parames = options.body;
     const parameArr = parames.split('&');

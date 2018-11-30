@@ -211,7 +211,8 @@ class Menu extends React.Component{
     return (
       
       <MainPage history={this.props.history}
-                >
+                reduxMenuKey = {this.state.menuKey}
+      >
         <Button type="primary" onClick={this.openBlankEditWindow}><Icon type="plus" />添加菜单</Button>
         &nbsp; &nbsp; &nbsp;       
         <Button type="primary" onClick={this.deleteSelectedRows}><Icon type="delete" />删除选中菜单</Button>

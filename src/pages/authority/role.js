@@ -209,7 +209,9 @@ class Role extends React.Component{
             },
         };
         return(
-            <MainPage history={this.props.history}>
+            <MainPage   history={this.props.history}
+                        reduxMenuKey = {this.state.menuKey}
+            >
 
                 <Button type="primary" onClick={this.openBlankEditWindow}><Icon type="plus" />添加角色</Button>
                 &nbsp; &nbsp; &nbsp;
