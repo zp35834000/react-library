@@ -6,7 +6,7 @@ import {ajax as jqueryAjax} from 'jquery'
 
 import './mainPage.css'
 import CustomIcon from './icon'
-
+import {chechAuthor} from '../util/authorUtil'
 const { Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
@@ -34,6 +34,10 @@ class mainPage extends React.Component {
 
 
   componentWillMount(){
+    // 检验登录权限
+    chechAuthor(this.props.loginUserKey.userKey, 
+      this.props.reduxMenuKey, this.props.history);
+
     this.loadMenuData();
     this.setSelectKeys();
   }
@@ -165,8 +169,15 @@ function mapStateToProps(state){
   }
 }
 
+function mapDispatchToProps(dispatch, ownProps){
+  return {
+      dispatch
+  }
+}
+
 
 // export default Menu;
 export default connect(
-  mapStateToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(mainPage);

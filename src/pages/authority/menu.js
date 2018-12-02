@@ -160,6 +160,7 @@ class Menu extends React.Component{
           values
         }).then(function (response) {
           _this.loadData();
+          _this.childForm.getAllMenus();
         }).catch(function (error) {
           console.log(error);
         });
@@ -169,6 +170,7 @@ class Menu extends React.Component{
           values
         }).then(function (response) {
           _this.loadData();
+          _this.childForm.getAllMenus();
         }).catch(function (error) {
           console.log(error);
         });

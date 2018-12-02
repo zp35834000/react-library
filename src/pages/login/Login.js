@@ -4,7 +4,7 @@ import {Modal, Button} from 'antd'
 
 import './login.css'
 import {CanvasParticle} from './canvas-particle'
-import {checkLogin} from '../../redux/actions/common'
+import {checkLogin, receiveLoginPosts} from '../../redux/actions/common'
 
 
 class Login extends React.Component {
@@ -19,6 +19,10 @@ class Login extends React.Component {
     }
 
     componentWillMount(){
+
+        // 清除redux中登录信息
+        this.props.dispatch(receiveLoginPosts(''));
+
         var config = {
             vx : 4,
             vy : 4,

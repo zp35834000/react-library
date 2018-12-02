@@ -26,7 +26,7 @@ function requestLoginPosts(){
 }
 
 /**接受登录response action */
-function receiveLoginPosts(userKey){
+export function receiveLoginPosts(userKey){
     return {
         type: RECEIVE_POSTS,
         userKey

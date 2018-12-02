@@ -1,13 +1,12 @@
 import React from 'react'
 import axios from 'axios'
-import {Table,Button, Icon, Modal} from 'antd'
+import {Table,Button, Icon, Modal, Tooltip} from 'antd'
 import {connect} from 'react-redux'
 
 import {menuSet} from '../../redux/actions/common'
 import MainPage from '../../component/mainPage'
 import EditRole from './editRole'
 import RoleMenuRel from './EditRoleMenuRel'
-
 
 
 
@@ -46,6 +45,7 @@ class Role extends React.Component{
     }
     
     componentWillMount(){
+
         this.loadData();
     }
 
@@ -185,9 +185,16 @@ class Role extends React.Component{
 
                     return (
                         <div>
-                            <a onClick={() =>_this.editRole(record)}><Icon type="edit" /></a>
-                            &nbsp;&nbsp;&nbsp;
-                            <a onClick={() =>_this.editRoleMenuRel(record)}><Icon type="credit-card" /></a>
+                            <a onClick={() =>_this.editRole(record)} style={{float:'left'}}>
+                                <Tooltip title="编辑角色名称">
+                                    <Icon type="edit" />
+                                </Tooltip>
+                            </a>
+                            <a onClick={() =>_this.editRoleMenuRel(record)} style={{float:'left'}}>
+                                <Tooltip title="查看/编辑角色权限">
+                                    <Icon type="credit-card" />
+                                </Tooltip>
+                            </a>
                         </div>
                     )
                 } 
@@ -198,7 +205,6 @@ class Role extends React.Component{
         const rowSelection = {
             onChange: (selectedRowKeyArr, selectedRows) => {
                 this.setState({selectedRowKeys: selectedRowKeyArr})
-                // selectedRowKeys = selectedRowKeyArr;
                 // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
             },
             onSelect: (record, selected, selectedRows) => {
@@ -255,6 +261,8 @@ class Role extends React.Component{
         )
     }
 }
+
+
 
 function mapDispatchToProps(dispatch, ownProps){
     return {

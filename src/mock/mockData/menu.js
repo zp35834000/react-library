@@ -56,10 +56,19 @@ function copyAllMenus(){
     return allMenuTemp;
 }
 
-// 获得制定id菜单的所有直系子集菜单
-function getDirectChildMenu(id){
+/**
+ * 获得指定id菜单的所有子级直属目录
+ * @param {指定id} id 
+ * @param {目录全集，默认为所有menu，如果查询的是用户权限，则为用户带有父级目录的权限集合} completeMenus 
+ */
+function getDirectChildMenu(id, completeMenus){
     let directChildenMenu = [];
-    let allMenusCopy = copyAllMenus();
+    let allMenusCopy;
+    if(completeMenus !== undefined){
+        allMenusCopy = completeMenus;
+    }else{
+        allMenusCopy = copyAllMenus();
+    }
     for (let i = 0; i < allMenusCopy.length; i++) {
         let singleMenu = allMenusCopy[i];
         if(singleMenu.parentId == id){
@@ -70,13 +79,13 @@ function getDirectChildMenu(id){
 }
 
 // 递归获得一个菜单的所有子集目录
-function getMenuWithChildren(singleMenu){
+function getMenuWithChildren(singleMenu, completeMenus){
     let id = singleMenu.key;
-    let directChildenMenu = getDirectChildMenu(id);
+    let directChildenMenu = getDirectChildMenu(id, completeMenus);
     if(directChildenMenu.length != 0){
         singleMenu.children = directChildenMenu;
         singleMenu.children.map(menu =>{
-            getMenuWithChildren(menu);
+            getMenuWithChildren(menu, completeMenus);
         })
         
     }
@@ -85,8 +94,7 @@ function getMenuWithChildren(singleMenu){
 }
 
 // 获得menu展示需要的数据个数，带有children属性
-function getAllMenuWithChildren(){
-    let allMenusCopy = copyAllMenus();
+function getAllMenuWithChildren(allMenusCopy = copyAllMenus()){
 
     let topMenus = allMenusCopy.filter(function(item){
         return (item.parentId == undefined);
@@ -94,16 +102,16 @@ function getAllMenuWithChildren(){
 
     let menuWithChildren = topMenus.map(
         menu => {
-            return getMenuWithChildren(menu);
+            return getMenuWithChildren(menu, allMenusCopy);
         }
     )
     return menuWithChildren;
 }
 
-/**通过userkey获得menu集合，并将结果组合成展示需要的带有children的数据类型 */
-function getMenuWithChildrenByUserKey(userKey){
+/**通过用户key获得该用户的所有权限menu对象 */
+function getMenuByUserKey(userKey){
     let menuKeysTemp = [];
-    let allMenusCopy = [];
+    let menuObjArr = [];
     const roleKeys = getRoleByUserKey(userKey);
     for (let i = 0; i < roleKeys.length; i++) {
         const roleKey = roleKeys[i];
@@ -121,21 +129,68 @@ function getMenuWithChildrenByUserKey(userKey){
         for (let j = 0; j < allMenus.length; j++) {
             const menuObj = allMenus[j];
             if(menuObj.key === menuKey){
-                allMenusCopy.push(Object.assign({}, menuObj));
+                menuObjArr.push(Object.assign({}, menuObj));
                 break;
             }
         }
     }
 
-    let topMenus = allMenusCopy.filter(function(item){
-        return (item.parentId == undefined);
-    });
+    return menuObjArr;
+}
 
-    let menuWithChildren = topMenus.map(
-        menu => {
-            return getMenuWithChildren(menu);
+/**获得渲染需要的menu集合，如果用户不具备父级权限的所有子集权限，那么用户即
+ * 不具备该父级权限，然而前台的渲染需要该父级权限，此方法主要补充渲染需要的
+ * 用户不具备的父级权限
+ */
+function getRenderNeededMenu(userMenuArr){
+    let renderNeededMenu = [];
+    let renderNeededMenuKeys = [];
+    for (let i = 0; i < userMenuArr.length; i++) {
+        const userMenu = userMenuArr[i];
+        const menuArrWithParents = getAllParentMenu(userMenu, []);
+        for (let j = 0; j < menuArrWithParents.length; j++) {
+            const menutemp = menuArrWithParents[j];
+            if(renderNeededMenuKeys.indexOf(menutemp.key) === -1){
+                renderNeededMenuKeys.push(menutemp.key);
+                renderNeededMenu.push(menutemp);
+            }
         }
-    )
+    }
+
+    return renderNeededMenu;
+}
+
+/**根据menukey获得该menu及其所有父级menu的集合 */
+function getAllParentMenu(menuObj, menuObjArr){
+    menuObjArr.push(menuObj);
+    if(menuObj.parentId !== undefined){
+        let parentMenu;
+        for (let i = 0; i < allMenus.length; i++) {
+            parentMenu = Object.assign({}, allMenus[i]);
+            if(parentMenu.key === menuObj.parentId){
+                menuObjArr.push(parentMenu);
+                break;
+            }
+        }
+        if(parentMenu.parentId !== undefined){
+            return getAllParentMenu(parentMenu, menuObjArr)
+        }else{
+            return menuObjArr;
+        }
+    }else{
+        return menuObjArr;
+    }
+}
+
+
+
+
+/**通过userkey获得menu集合，并将结果组合成展示需要的带有children的数据类型 */
+function getMenuWithChildrenByUserKey(userKey){
+    const userMenus = getMenuByUserKey(userKey);
+    const renderNeededMenu = getRenderNeededMenu(userMenus);
+    const menuWithChildren = getAllMenuWithChildren(renderNeededMenu);
+
     return menuWithChildren;
 }
 
@@ -246,7 +301,6 @@ export var getMenuHasChidrenAction = Mock.mock('/menuController/getMenuHasChidre
 
 
 export var getMenuWithChildrenByUserKeyAction = Mock.mock('/menuController/getMenuByUserKey', function(options){
-    debugger;
     const userKey = JSON.parse(options.body).userKey;
     return getMenuWithChildrenByUserKey(userKey);
 })
