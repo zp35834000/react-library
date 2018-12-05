@@ -1,3 +1,5 @@
+import Mock from 'mockjs'
+import {guid} from '../../util'
 
 /**
  * 书籍详情
@@ -6,14 +8,14 @@
  * bookKey:     所属书籍(对应bookType中key)
  */
 export let detailBooks = [
-    {key: '0', borrowed: 1, bookKey: '0'},
-    {key: '1', borrowed: 0, bookKey: '0'},
-    {key: '2', borrowed: 0, bookKey: '0'},
-    {key: '3', borrowed: 0, bookKey: '0'},
-    {key: '4', borrowed: 1, bookKey: '1'},
-    {key: '5', borrowed: 1, bookKey: '1'},
-    {key: '6', borrowed: 1, bookKey: '1'},
-    {key: '7', borrowed: 1, bookKey: '1'},
-    {key: '8', borrowed: 0, bookKey: '1'},
-    {key: '9', borrowed: 0, bookKey: '1'}
+    {key: '0', borrowed: 1, bookKey: '0', borrowUserKey: 'zpkey'},
+    {key: '1', borrowed: 0, bookKey: '0', borrowUserKey: ''},
+    {key: '2', borrowed: 0, bookKey: '0', borrowUserKey: ''},
+    {key: '3', borrowed: 0, bookKey: '0', borrowUserKey: ''},
+    {key: '4', borrowed: 1, bookKey: '1', borrowUserKey: 'zpkey'},
+    {key: '5', borrowed: 1, bookKey: '1', borrowUserKey: 'wyyykey'},
+    {key: '6', borrowed: 1, bookKey: '1', borrowUserKey: 'wyyykey'},
+    {key: '7', borrowed: 1, bookKey: '1', borrowUserKey: 'zpkey'},
+    {key: '8', borrowed: 0, bookKey: '1', borrowUserKey: ''},
+    {key: '9', borrowed: 0, bookKey: '1', borrowUserKey: ''}
 ]

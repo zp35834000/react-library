@@ -1,10 +1,17 @@
 import Mock from 'mockjs'
+
+// 权限相关mock数据
 import {} from './mockData/menu'
 import {} from './mockData/icon'
 import {} from './mockData/role'
 import {} from './mockData/roleMenuRel'
 import {} from './mockData/User'
 import {} from './mockData/UserRole'
+
+// 书籍相关mock数据
+import {} from './mockData/book/book'
+import {} from './mockData/book/bookType'
+import {} from './mockData/book/detailBook'
 
 Mock.mock( '/user', function(options){
     console.log(options);

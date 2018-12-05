@@ -6,42 +6,15 @@ import {getRoleMenuByRoleId} from './roleMenuRel'
 
 // 数据源
 let allMenus = [
-    {
-        name: '权限管理',
-        url: '',
-        iconType: 'yingyongguanli',
-        level: '0',
-        order:'0',
-        key: '0',
-
-    },
-    {
-        name: '权限菜单',
-        url: '/menu',
-        iconType: 'yingyongguanli',
-        level: '1',
-        order:'0',
-        key: '00',
-        parentId: '0'
-    },
-    {
-        name: '角色',
-        url: '/role',
-        iconType: '',
-        level: '1',
-        order:'1',
-        key: '01',
-        parentId: '0'
-    },
-    {
-        name: '用户',
-        url: '/user',
-        iconType: 'yingyongguanli',
-        level: '1',
-        order:'2',
-        key: '02',
-        parentId: '0',
-    }
+    // 权限管理
+    {name: '权限管理', url: '', iconType: 'yingyongguanli', level: '0', order:'0', key: '0'},
+    {name: '权限菜单', url: '/menu', iconType: 'yingyongguanli', level: '1', order:'0', key: '00', parentId: '0'},
+    {name: '角色', url: '/role', iconType: '', level: '1', order:'1', key: '01', parentId: '0'},
+    {name: '用户', url: '/user', iconType: 'yingyongguanli', level: '1', order:'2', key: '02', parentId: '0'},
+    // 图书管理
+    {name: '图书管理', url: '', iconType: '', level: '0', order:'1', key: '1'},
+    {name: '图书分类', url: '/bookType', iconType: '', level: '1', order:'0', key: '10', parentId: '1'},
+    {name: '图书详情', url: '/book', iconType: '', level: '1', order:'1', key: '11', parentId: '1'},
 ]
 
 

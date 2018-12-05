@@ -206,7 +206,8 @@ class User extends React.Component{
                             </Button>
                         ]}
                         bodyStyle={{height:'600px'}}
-                        width='700px'>
+                        width='700px'
+                >
                     <EditUser onRef={this.onRef} defaultEditRecord={this.state.eidtRecord}></EditUser>
                 </Modal>
 
