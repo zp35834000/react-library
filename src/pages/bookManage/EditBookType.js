@@ -6,6 +6,11 @@ const FormItem = Form.Item;
 
 class EditBookType extends React.Component {
 
+
+    componentWillMount(){
+        this.props.onRef(this);
+    }
+
     // 提交表单
     handleSubmit = (e) => {
         let submitted = false;

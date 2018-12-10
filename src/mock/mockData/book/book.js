@@ -11,10 +11,10 @@ import {detailBooks} from './detailBook'
  * type:                所属书籍类型(bookTypes中key值)
  */
 let books = [
-    {key: '0', name: '四书五经', author: '无',publicshingHouse: '商务印书馆',
+    {key: '0', name: '四书五经', author: '无',publishingHouse: '商务印书馆',
     publicshingTime: '2012-10', type: 'literature'},
     
-    {key: '1', name: '二十四史', author: '无',publicshingHouse: '商务印书馆',
+    {key: '1', name: '二十四史', author: '无',publishingHouse: '商务印书馆',
     publicshingTime: '2012-10',  type: 'literature'}
     
 ]
@@ -30,7 +30,7 @@ let books = [
  * type:                所属书籍类型(bookTypes中key值)
  * total:               总数            通过计算完整
  * borrowed:            借出数          通过计算完整
- * circuleted:          未借出数        通过计算完整
+ * circulated:          未借出数        通过计算完整
  */
 export const getAllBooks = () => {
     let detailBookCopy = [];
@@ -72,3 +72,6 @@ export const getAllBooks = () => {
 }
 
 
+export const getBookAction = Mock.mock('/bookController/getBook', function(options){
+    return getAllBooks();
+})

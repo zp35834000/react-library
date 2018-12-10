@@ -26,15 +26,76 @@ class BookType extends React.Component{
 
     closeEditWindow = () =>{
         this.setState({editMenuVisible: false});
+        // 重置所有输入框值
+        this.childForm.props.form.resetFields();
     }
 
     submitForm = () => {
+        const submittedFormData = this.childForm.handleSubmit();
+        const _this  = this;
+        if(submittedFormData !== false){
+            // 提交表单
+            if(this.state.eidtRecord.editType === 'add'){
+                // 添加操作
+                axios.post('/bookTypeController/addBookType',{
+                    ...submittedFormData
+                }).then(function (response) {
+                    _this.loadData();
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }else if(this.state.eidtRecord.editType === 'edit'){
+                // 编辑操作
+                axios.post('/bookTypeController/editBookType',{
+                    key : _this.state.eidtRecord.key,
+                    name: submittedFormData.name
+                }).then(function (response) {
+                    _this.loadData();
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        }
 
+        // 关闭窗口
+        this.closeEditWindow();
     }
 
 
+    deleteSelectedRows = () => {
+        const _this = this;
+        const deleKeyArr = this.state.selectedRowKeyArr;
+        //删除选中项
+        axios.post('/bookTypeController/delBookType',{
+            deleKeyArr
+        }).then(function (response) {
+            _this.loadData();
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
+
+    editBookType = (record) => {
+        const {
+            name,
+            key
+        } = record;
+
+        this.setState({
+            eidtRecord: {
+                name,
+                key,
+                editType: 'edit'
+            }
+        });
+
+        this.setState({editMenuVisible: true});
+    }
+
     openBlankEditWindow = () => {
         this.setState({editMenuVisible: true});
+        this.setState({eidtRecord: {editType: 'add'}});
     }
 
     loadData = () =>{
@@ -56,6 +117,18 @@ class BookType extends React.Component{
             {title: '总数', dataIndex: 'total'},
             {title: '借出数', dataIndex: 'borrowed'},
             {title: '未借出数', dataIndex: 'circulated'},
+            {
+                title: '操作',
+                dataIndex: 'operation_col',
+                render: (text, record, index) =>{
+
+                    return (
+                        <div>
+                            <a onClick={() =>_this.editBookType(record)}><Icon type="edit" /></a>
+                        </div>
+                    )
+                } 
+            }
         ]
 
         // 选中信息

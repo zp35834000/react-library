@@ -20,7 +20,6 @@ export let bookTypes = [
  * circulated：     该类书籍未借出总数         通过计算完整
  */
 export const getBookTypesWithCount = () => {
-    debugger;
     // 附带数据统计信息的书籍概览
     let booksWithCount = getAllBooks();
     let bookTypesWithCount = [];
@@ -51,4 +50,50 @@ export const getBookTypesWithCount = () => {
 
 export const getBookTypesWithCountAction = Mock.mock('/bookTypeController/getAllBookType', function(options){
     return getBookTypesWithCount();
+})
+
+
+export const addBookTypeAction = Mock.mock('/bookTypeController/addBookType', function(options){
+    const name = JSON.parse(options.body).name;
+    const needAddBookType = {name};
+    needAddBookType.key = guid();
+    bookTypes.push(needAddBookType);
+})
+
+
+export const delBookType = Mock.mock('/bookTypeController/delBookType', function(options){
+    const delBookTypeKeys = JSON.parse(options.body).deleKeyArr;
+    for (let i = 0; i < delBookTypeKeys.length; i++) {
+        const delBookTypeKey = delBookTypeKeys[i];
+        for (let j = 0; j < bookTypes.length; j++) {
+            const bookType = bookTypes[j];
+            if(bookType.key === delBookTypeKey){
+                bookTypes.splice(j ,1);
+                break;
+            }
+        }
+        
+    }
+})
+
+
+export const editBookType = Mock.mock('/bookTypeController/editBookType', function(options){
+    const bookTypeNeedEdit = JSON.parse(options.body);
+    for (let i = 0; i < bookTypes.length; i++) {
+        const bookType = bookTypes[i];
+        if(bookType.key === bookTypeNeedEdit.key){
+            bookTypes.splice(i ,1 ,bookTypeNeedEdit);
+            break;
+        }
+    }
+})
+
+
+export const getSimpleBookAction = Mock.mock('/bookTypeController/getSimpleBook', function(options){
+    const bookTypeMap = {};
+    for (let i = 0; i < bookTypes.length; i++) {
+        const bookType = bookTypes[i];
+        bookTypeMap[bookType.key] = bookType.name;
+    }
+    return bookTypeMap;
 })
