@@ -97,3 +97,7 @@ export const getSimpleBookAction = Mock.mock('/bookTypeController/getSimpleBook'
     }
     return bookTypeMap;
 })
+
+export const getSimpleDataAction = Mock.mock('/bookTypeController/getSimpleData', function(options){
+    return bookTypes;
+})

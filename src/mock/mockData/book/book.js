@@ -12,10 +12,10 @@ import {detailBooks} from './detailBook'
  */
 let books = [
     {key: '0', name: '四书五经', author: '无',publishingHouse: '商务印书馆',
-    publicshingTime: '2012-10', type: 'literature'},
+    publishingTime: '2012-10', type: 'literature'},
     
     {key: '1', name: '二十四史', author: '无',publishingHouse: '商务印书馆',
-    publicshingTime: '2012-10',  type: 'literature'}
+    publishingTime: '2012-10',  type: 'literature'}
     
 ]
 
@@ -74,4 +74,57 @@ export const getAllBooks = () => {
 
 export const getBookAction = Mock.mock('/bookController/getBook', function(options){
     return getAllBooks();
+})
+
+
+export const addBookAction = Mock.mock('/bookController/addBook', function(options){
+    const bookNeedAdd = JSON.parse(options.body);
+    const key = guid();
+    bookNeedAdd.key = key;
+    books.push(bookNeedAdd);
+})
+
+
+export const editBookAction = Mock.mock('/bookController/editBook', function(options){
+    const bookNeedEdit = JSON.parse(options.body);
+    for (let i = 0; i < books.length; i++) {
+        const currentBook = books[i];
+        if(currentBook.key === bookNeedEdit.key){
+            books.splice(i , 1, bookNeedEdit);
+        }
+    }
+})
+
+
+export const delBookAction = Mock.mock('/bookController/delBook', function(options){
+    const delBook = JSON.parse(options.body);
+    const delBookKeys = delBook.keys;
+    const forbidDelBook = [];
+    const bookWithCount = getAllBooks();
+    for (let i = 0; i < delBookKeys.length; i++) {
+        const delBookKey = delBookKeys[i];
+        // 检查是否有借出书籍，如有借出书籍，不执行删除操作，并提示
+        for (let j = 0; j < bookWithCount.length; j++) {
+            const simpleBookWithCount = bookWithCount[j];
+            if(simpleBookWithCount.key === delBookKey){
+                if(simpleBookWithCount.borrowed === 0){
+                    // 删除book
+                    bookWithCount.splice(j , 1);
+                    books.splice(j , 1);
+                    // 删除detailBook
+                    for (let k = 0; k < detailBooks.length; k++) {
+                        const detailBook = detailBooks[k];
+                        if(detailBook.bookKey === delBookKey){
+                            detailBooks.splice(k , 1);
+                        }
+                    }
+                }else{
+                    forbidDelBook.push(simpleBookWithCount.name);
+                }
+                break;
+            }
+        }
+    }
+
+    return forbidDelBook;
 })

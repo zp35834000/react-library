@@ -17,7 +17,14 @@ let allUser = [
     },
 ]
 
-
+export const getUserKeyAndName = () => {
+    const UserKeyAndName = {};
+    for (let i = 0; i < allUser.length; i++) {
+        const user = allUser[i];
+        UserKeyAndName[user.key] = user.username;
+    }
+    return UserKeyAndName;
+}
 
 // 地址信息
 export const addressArr = [

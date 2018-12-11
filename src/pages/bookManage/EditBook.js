@@ -4,16 +4,23 @@ import {Form, Input, DatePicker, Select} from 'antd'
 import React from 'react'
 import moment from 'moment';
 import locale from 'antd/lib/date-picker/locale/zh_CN';
+import axios from 'axios'
 
 const { MonthPicker } = DatePicker;
 const FormItem = Form.Item;
+const SelectOption = Select.Option
 
 // 编辑书本
 
 class EditBook extends React.Component{
 
+    state = {
+        bookTypeArr: []
+    }
+
     componentWillMount(){
         this.props.onRef(this);
+        this.getBookTypes();
     }
 
     // 提交表单
@@ -36,6 +43,15 @@ class EditBook extends React.Component{
         return submitted;
     }
 
+    getBookTypes = () =>{
+        const _this = this;
+        axios.post('/bookTypeController/getSimpleData',{
+        }).then(function (response) {
+            _this.setState({bookTypeArr: response.data});
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
 
     render() {
         const _this = this;
@@ -53,6 +69,11 @@ class EditBook extends React.Component{
         };
 
         const editRole = this.props.defaultEditRecord;
+
+        let defaultPublishTime = null;
+        if(editRole.publishingTime !== undefined){
+            defaultPublishTime = moment(editRole.publishingTime, 'YYYY-MM');
+        }
         return (
             <Form onSubmit={this.handleSubmit}>
                 <FormItem
@@ -87,7 +108,7 @@ class EditBook extends React.Component{
                 >
                     {getFieldDecorator('publishingHouse', {
                         rules: [
-                            {required: true, message: '请输入角色名称!'}
+                            {required: true, message: '请输入出版社名称!'}
                         ],
                         initialValue: editRole.publishingHouse
                     })(
@@ -98,12 +119,11 @@ class EditBook extends React.Component{
                     {...formItemLayout}
                     label="出版时间"
                 >
-                    {getFieldDecorator('publicshingTime', {
+                    {getFieldDecorator('publishingTime', {
                         rules: [
-                            {required: true, message: '请输入角色名称!'}
+                            {required: true, message: '请选择图书出版时间!'}
                         ],
-                        // initialValue: editRole.publicshingTime
-                        initialValue: moment('2015/01', 'YYYY-MM')  
+                        initialValue: defaultPublishTime
                     })(
                         <MonthPicker  format='YYYY-MM' locale = {locale}/>
                     )}
@@ -114,11 +134,23 @@ class EditBook extends React.Component{
                 >
                     {getFieldDecorator('type', {
                         rules: [
-                            {required: true, message: '请输入角色名称!'}
+                            {required: true, message: '请选择图书类型!'}
                         ],
                         initialValue: editRole.type
                     })(
-                        <Input />
+                        <Select>
+                            {
+                                _this.state.bookTypeArr.map(
+                                    (bookType) => {
+                                        return (
+                                            <SelectOption value = {bookType.key} key={bookType.key}>
+                                                {bookType.name}
+                                            </SelectOption>
+                                        )
+                                    }
+                                )
+                            }
+                        </Select>
                     )}
                 </FormItem>
             </Form>

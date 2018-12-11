@@ -1,21 +1,54 @@
 import Mock from 'mockjs'
+
 import {guid} from '../../util'
+import {getUserKeyAndName} from '../User'
 
 /**
  * 书籍详情
- * key:         每本书籍的独立标识
- * borrowed:    是否已借出(1: 借出, 2:未借出)
- * bookKey:     所属书籍(对应bookType中key)
+ * key:                 每本书籍的独立标识
+ * borrowed:            是否已借出(1: 借出, 2:未借出)
+ * bookKey:             所属书籍(对应bookType中key)
+ * borrowUserKey:       借阅用户key
+ * borrowTime:          借出时间
+ * shouldReturnTime:    应归还时间
  */
 export let detailBooks = [
-    {key: '0', borrowed: 1, bookKey: '0', borrowUserKey: 'zpkey'},
-    {key: '1', borrowed: 0, bookKey: '0', borrowUserKey: ''},
-    {key: '2', borrowed: 0, bookKey: '0', borrowUserKey: ''},
-    {key: '3', borrowed: 0, bookKey: '0', borrowUserKey: ''},
-    {key: '4', borrowed: 1, bookKey: '1', borrowUserKey: 'zpkey'},
-    {key: '5', borrowed: 1, bookKey: '1', borrowUserKey: 'wyyykey'},
-    {key: '6', borrowed: 1, bookKey: '1', borrowUserKey: 'wyyykey'},
-    {key: '7', borrowed: 1, bookKey: '1', borrowUserKey: 'zpkey'},
-    {key: '8', borrowed: 0, bookKey: '1', borrowUserKey: ''},
-    {key: '9', borrowed: 0, bookKey: '1', borrowUserKey: ''}
+    {key: '0', borrowed: 1, bookKey: '0', borrowUserKey: 'zpkey', 
+        borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11'},
+    {key: '1', borrowed: 0, bookKey: '0', borrowUserKey: '', 
+        borrowTime: '', shouldReturnTime: ''},
+    {key: '2', borrowed: 0, bookKey: '0', borrowUserKey: '', 
+        borrowTime: '', shouldReturnTime: ''},
+    {key: '3', borrowed: 0, bookKey: '0', borrowUserKey: '', 
+        borrowTime: '', shouldReturnTime: ''},
+    {key: '4', borrowed: 1, bookKey: '1', borrowUserKey: 'zpkey', 
+        borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11'},
+    {key: '5', borrowed: 1, bookKey: '1', borrowUserKey: 'wyyykey', 
+        borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11'},
+    {key: '6', borrowed: 1, bookKey: '1', borrowUserKey: 'wyyykey', 
+        borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11'},
+    {key: '7', borrowed: 1, bookKey: '1', borrowUserKey: 'zpkey', 
+        borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11'},
+    {key: '8', borrowed: 0, bookKey: '1', borrowUserKey: '', 
+        borrowTime: '', shouldReturnTime: ''},
+    {key: '9', borrowed: 0, bookKey: '1', borrowUserKey: '', 
+        borrowTime: '', shouldReturnTime: ''}
 ]
+
+
+export const getBookByBookKey = Mock.mock('/detailBookController/getBookByBookKey', function(options){
+    debugger;
+    const bookKey = JSON.parse(options.body).bookKey;
+    const UserKeyAndName = getUserKeyAndName();
+    const detailBookResult = [];
+    for (let i = 0; i < detailBooks.length; i++) {
+        const detailBook = detailBooks[i];
+        if(detailBook.bookKey === bookKey){
+            const temp = Object.assign({}, detailBook, {
+                borrowUserKey: UserKeyAndName[detailBook.borrowUserKey]
+            })
+            detailBookResult.push(temp);
+        }
+    }
+    return detailBookResult;
+})
