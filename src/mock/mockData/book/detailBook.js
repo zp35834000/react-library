@@ -37,7 +37,6 @@ export let detailBooks = [
 
 
 export const getBookByBookKey = Mock.mock('/detailBookController/getBookByBookKey', function(options){
-    debugger;
     const bookKey = JSON.parse(options.body).bookKey;
     const UserKeyAndName = getUserKeyAndName();
     const detailBookResult = [];
@@ -51,4 +50,31 @@ export const getBookByBookKey = Mock.mock('/detailBookController/getBookByBookKe
         }
     }
     return detailBookResult;
+})
+
+
+export const addDetailBook = Mock.mock('/detailBookController/addDetailBook', function(options){
+    const bookKey = JSON.parse(options.body).bookKey;
+    const key = guid();
+    const detailBookNeedAdd = {
+        key,
+        borrowed: 0,  
+        borrowUserKey: '', 
+        borrowTime: '', 
+        shouldReturnTime: '',
+        bookKey,
+    }
+    detailBooks.push(detailBookNeedAdd);
+})
+
+
+export const delDetailBookAction = Mock.mock('/detailBookController/delDetailBook', function(options){
+    const key = JSON.parse(options.body).key;
+    for (let i = 0; i < detailBooks.length; i++) {
+        const detailBook = detailBooks[i];
+        if(detailBook.key === key){
+            detailBooks.splice(i, 1);
+            break;
+        }
+    }
 })

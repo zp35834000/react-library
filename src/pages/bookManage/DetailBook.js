@@ -1,24 +1,39 @@
 import React from 'react'
-import {Table, Modal, Button, Icon} from 'antd'
+import {Table, Modal, Button, Icon, Tooltip} from 'antd'
 import axios from 'axios'
 
 /**图书详情 */
 class DetailBook extends React.Component{
 
     state = {
-        data: [],
-        selectedRowKeyArr: []
+        data: []
     }
     
-    componentWillMount(){
-        debugger;
-        this.props.onDetailRef(this);
+    componentDidMount() {
+        this.props.onDetailBookLoadFun(this.loadData);
     }
+
+    componentWillMount(){
+        this.props.onDetailBookLoadFun(this.loadData);
+    }
+
+    addDetailBook = () => {
+        const _this = this;
+        axios.post('/detailBookController/addDetailBook',{
+            bookKey: _this.props.bookKey
+        }).then(function (response) {
+            _this.loadData();
+            _this.props.loadParentTable();
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
 
     loadData = () => {
         const _this = this;
         axios.post('/detailBookController/getBookByBookKey',{
-            bookKey : _this.props.bookKey,
+            bookKey : _this.props.bookKey
         }).then(function (response) {
             _this.setState({data: response.data});
         }).catch(function (error) {
@@ -26,51 +41,79 @@ class DetailBook extends React.Component{
         });
     }
 
+    /**销毁图书 */
+    delDetailBook = (record) => {
+        const _this = this;
+        axios.post('/detailBookController/delDetailBook',{
+            key: record.key
+        }).then(function (response) {
+            _this.loadData();
+            _this.props.loadParentTable();
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
     render(){
+
         const _this = this;
 
+        let tableDatasource = this.props.detailBookData;
+        if(this.state.data.length != 0 ){
+            tableDatasource = this.state.data;
+        }
+
         const columns = [
-            {title: 'key', dataIndex: 'key'},
+            {title: 'key', dataIndex: 'key',width: '200px'},
             {title: '借出状态', dataIndex: 'borrowed', render: function(text, record, index){
+                
                 let borrowState = "";
-                if(text === '1'){
+                if(text === 1){
                     borrowState = "已借出";
-                }else if(text === '0'){
+                }else if(text === 0){
                     borrowState = "未借出";
                 }
                 return borrowState;
                 
-            }},
-            {title: '借阅用户', dataIndex: 'borrowUserKey'},
-            {title: '借出时间', dataIndex: 'borrowTime'},
-            {title: '应归还时间', dataIndex: 'shouldReturnTime'}
+            },width: '120px'},
+            {title: '借阅用户', dataIndex: 'borrowUserKey',width: '120px'},
+            {title: '借出时间', dataIndex: 'borrowTime',width: '130px'},
+            {title: '应归还时间', dataIndex: 'shouldReturnTime',width: '130px'},
+            {
+                title: '操作',
+                dataIndex: 'operation_col',
+                render: (text, record, index) =>{
+                    if(record.borrowed === 0){
+
+                        return (
+                            <div>
+                                <Tooltip title= "销毁该本图书">
+    
+                                    <a onClick={() =>_this.delDetailBook(record)}><Icon type="delete" /></a>
+                                </Tooltip>
+                            </div>
+                        )
+                    }
+                },
+                width: '80px'
+            }
         ]
 
-        // 选中信息
-        const rowSelection = {
-
-            onChange: (selectedRowKeyArr, selectedRows) => {
-                _this.setState({selectedRowKeyArr: selectedRowKeyArr})
-                // selectedRowKeys = selectedRowKeyArr;
-                // console.log(`selectedRowKeys: ${selectedRowKeyArr}`, 'selectedRows: ', selectedRows);
-            },
-            onSelect: (record, selected, selectedRows) => {
-                // console.log(record, selected, selectedRows);
-            },
-            onSelectAll: (selected, selectedRows, changeRows) => {
-                // console.log(selected, selectedRows, changeRows);
-            },
-        };
 
         return (
             <div>
-
+                <Button type="primary" onClick={this.addDetailBook}>
+                    <Icon type="plus" />添加此类图书
+                </Button>
                 <Table
-                    pagination = {true}
+                    pagination = {{
+                        pageSize:4
+                    }}
                     bordered = {true}
                     columns = {columns}
-                    dataSource = {this.state.data}
-                    rowSelection = {rowSelection}
+                    // dataSource = {this.props.detailBookData}
+                    dataSource = {tableDatasource}
+                    scroll = {{x:800,y: 200}}
                 >
                 </Table>
             </div>

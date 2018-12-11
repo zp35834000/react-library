@@ -15,8 +15,9 @@ class Book extends React.Component{
         eidtRecord: {},
         selectedRowKeyArr: [],
         editMenuVisible: false,
-        viewDetailBookKey: '',
-        detailBookVisible: false
+        detailBookData: [],
+        detailBookVisible: false,
+        viewDetailBookKey: ''
     }
 
     componentWillMount(){
@@ -39,8 +40,8 @@ class Book extends React.Component{
         this.childForm = ref;
     }
 
-    onDetailRef = (ref) => {
-        this.childDetailBook = ref;
+    onDetailBookLoadFun = (ref) => {
+        this.DetailBookLoadFun = ref;
     }
 
     loadBookTypeMap = () => {
@@ -56,15 +57,27 @@ class Book extends React.Component{
 
     /**查看详细书籍信息 */
     viewDetailBook = (record) =>{
-        debugger;
-        this.setState({
-            viewDetailBookKey: record.key,
-            detailBookVisible: true
-        });
-        if(this.childDetailBook !== undefined){
+        const _this = this;
+        // if(this.DetailBookLoadFun){
 
-            this.childDetailBook.loadData();
-        }
+        //     _this.setState({
+        //         viewDetailBookKey: record.key,
+        //         detailBookVisible: true
+        //     });
+        //     // this.DetailBookLoadFun();
+        // }
+        axios.post('/detailBookController/getBookByBookKey',{
+            bookKey : record.key,
+        }).then(function (response) {
+            _this.setState({
+                detailBookData: response.data,
+                viewDetailBookKey: record.key,
+                detailBookVisible: true
+            });
+        }).catch(function (error) {
+            console.log(error);
+        });
+        
     }
 
     /**关闭详细书籍信息 */
@@ -243,17 +256,20 @@ class Book extends React.Component{
                 <Modal
                     ref="modal"
                     visible={this.state.detailBookVisible}
-                    title="添加类型" 
+                    title="图书详情" 
                     onCancel={this.closeDetailBookWindow}
                     footer={[
                         <Button key="back" type="ghost" size="large" onClick={this.closeDetailBookWindow}>关  闭</Button>,
                     ]}
                     bodyStyle={{height:'400px'}}
-                    width='700px'
+                    width='900px'
                 >
                     <DetailBook
-                        bookKey = {this.state.viewDetailBookKey}
+                        detailBookData = {this.state.detailBookData}
                         onDetailRef = {this.onDetailRef}
+                        bookKey = {this.state.viewDetailBookKey}
+                        loadParentTable = {this.loadData}
+                        onDetailBookLoadFun = {this.onDetailBookLoadFun}
                     >
                     </DetailBook>
                 </Modal>
