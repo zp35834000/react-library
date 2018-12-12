@@ -107,7 +107,8 @@ class DetailBook extends React.Component{
                 </Button>
                 <Table
                     pagination = {{
-                        pageSize:4
+                        pageSize:4,
+                        showTotal: (total, range) => (`${range[0]}-${range[1]}    总计  ${total} 册`)
                     }}
                     bordered = {true}
                     columns = {columns}
