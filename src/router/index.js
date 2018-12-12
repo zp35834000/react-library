@@ -11,6 +11,10 @@ import User from '../pages/authority/User'
 import Book from '../pages/bookManage/Book'
 import BookType from '../pages/bookManage/BookType'
 
+
+// 图书借阅
+import BookBoorrow from '../pages/borrowManage/Borrow'
+
 // 登录界面
 import Login from '../pages/login/Login'
 
@@ -21,8 +25,11 @@ const route = () => (
             <Route path='/menu' component={Menu}></Route>
             <Route path='/role' component={Role}></Route>
             <Route path='/user' component={User}></Route>
+
             <Route path='/book' component={Book}></Route>
             <Route path='/bookType' component={BookType}></Route>
+
+            <Route path='/borrowManage/borrow' component={BookBoorrow}></Route>
         </div>
     </BrowserRouter>
 )

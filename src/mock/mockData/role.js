@@ -9,7 +9,8 @@ import {guid} from '../util'
 
 export let allRoles = [
     {name: '管理员', key: '0'},
-    {name: '普通用户', key: '1'}
+    {name: '普通用户', key: '1'},
+    {name: '可借阅用户', key: '2'},
 ]
 
 

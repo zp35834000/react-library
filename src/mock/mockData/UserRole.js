@@ -6,7 +6,9 @@ import {guid} from '../util/index'
 export let allUserRole = [
     {userKey: 'zpkey', roleKey: '0', key: '0'},
     {userKey: 'zpkey', roleKey: '1', key: '1'},
-    {userKey: 'wyyykey', roleKey: '1', key: '2'}
+    {userKey: 'wyyykey', roleKey: '1', key: '2'},
+    {userKey: 'zpkey', roleKey: '2', key: '3'},
+    {userKey: 'wyyykey', roleKey: '2', key: '4'},
 ]
 
 /**通过用户key获得roleKey集合 */

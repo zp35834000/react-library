@@ -15,6 +15,9 @@ let allMenus = [
     {name: '图书管理', url: '', iconType: '', level: '0', order:'1', key: '1'},
     {name: '图书分类', url: '/bookType', iconType: '', level: '1', order:'0', key: '10', parentId: '1'},
     {name: '图书详情', url: '/book', iconType: '', level: '1', order:'1', key: '11', parentId: '1'},
+    // 借阅管理
+    {name: '借阅管理', url: '', iconType: '', level: '0', order:'2', key: '2'},
+    {name: '借阅图书', url: '/borrowManage/borrow', iconType: '', level: '1', order:'0', key: '20', parentId: '2'},
 ]
 
 
