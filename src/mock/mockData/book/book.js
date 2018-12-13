@@ -1,6 +1,7 @@
 import Mock from 'mockjs'
 import {guid} from '../../util'
 import {detailBooks} from './detailBook'
+import {getSimpleBook} from './bookType'
 /**
  * 数据概览
  * key：                概览id
@@ -19,6 +20,20 @@ let books = [
     
 ]
 
+/**通过key获得book详细信息 */
+export const getBookByKey = (key) => {
+    const bookTypeKeyAndName = getSimpleBook();
+    let resultBookObj;
+    for (let i = 0; i < books.length; i++) {
+        const book = books[i];
+        if(book.key === key){
+            resultBookObj = Object.assign({}, book, {
+                type: bookTypeKeyAndName[book.type]
+            })
+        }
+    }
+    return resultBookObj;
+}
 
 /**
  * 获得所有数据概览信息

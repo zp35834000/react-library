@@ -9,16 +9,99 @@ import MainPage from '../../component/mainPage'
 class Borrow extends React.Component{
 
     state = {
-        menuKey: '20'
+        menuKey: '20',
+        borrowBooks: [],
+        borrowedKeyAndValue: {}
+    }
+
+
+    componentWillMount(){
+        this.getBorrowBooks();
+        this.getBorrowedKeyAndValue();
+    }
+
+    getBorrowedKeyAndValue = () => {
+        const _this = this;
+        axios.post('/detailBookController/getBorrowedKeyAndValue',{
+        }).then(function (response) {
+            _this.setState({borrowedKeyAndValue: response.data});
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    /**获得当前登录用户借阅的图书信息 */
+    getBorrowBooks = () => {
+        const _this = this;
+        axios.post('/detailBookController/getDetailByUserKey',{
+            userKey: this.props.loginUserKey.userKey
+        }).then(function (response) {
+            _this.setState({borrowBooks: response.data});
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    /**归还图书，进入归还审批 */
+    returnBook = (record) => {
+        const _this = this;
+        axios.post('/detailBookController/setDetailReturnReview',{
+            key: record.key
+        }).then(function (response) {
+            _this.getBorrowBooks();
+        }).catch(function (error) {
+            console.log(error);
+        });
     }
 
     render(){
+        const _this = this;
+
+        const columns = [
+            {title: '图书名称', dataIndex: 'name'},
+            {title: '作者', dataIndex: 'author'},
+            {title: '出版社', dataIndex: 'publishingHouse'},
+            {title: '出版时间', dataIndex: 'publishingTime'},
+            {title: '图书类型', dataIndex: 'type'},
+            {title: '借阅时间', dataIndex: 'borrowTime'},
+            {title: '应归还时间', dataIndex: 'shouldReturnTime'},
+            {title: '借出状态', dataIndex: 'borrowed', render: function(text, record, index){
+                
+                let borrowState = "";
+                borrowState = _this.state.borrowedKeyAndValue[text];
+                return borrowState;
+                
+            }},
+            {
+                title: '操作',
+                dataIndex: 'operation_col',
+                render: (text, record, index) =>{
+
+                    return (
+                        <div>
+                            <a onClick={() =>_this.returnBook(record)}>归还图书</a>
+                        </div>
+                    )
+                } 
+            }
+        ]
+
         return (
             <MainPage
                 history = {this.props.history}
                 reduxMenuKey = {this.state.menuKey}
             >
-                借阅图书页面
+                <Button type="primary" onClick={this.borrowBook}>
+                    <Icon type="plus" />借阅书籍
+                </Button>
+                <Table
+                    pagination = {false}
+                    bordered = {true}
+                    columns = {columns}
+                    dataSource = {this.state.borrowBooks}
+                    title = {() => '已借阅图书'}
+                >
+                </Table>
             </MainPage>
         )
     }
@@ -30,7 +113,15 @@ function mapDispatchToProps(dispatch, ownProps){
     }
 }
 
+
+function mapStateToProps(state){
+    const {loginUserKey} = state;
+    return {
+        loginUserKey
+    }
+}
+
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(Borrow);

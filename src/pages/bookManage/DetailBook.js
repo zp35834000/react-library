@@ -6,15 +6,14 @@ import axios from 'axios'
 class DetailBook extends React.Component{
 
     state = {
-        data: []
+        data: [],
+        borrowedKeyAndValue: {}
     }
     
-    componentDidMount() {
-        this.props.onDetailBookLoadFun(this.loadData);
-    }
 
     componentWillMount(){
         this.props.onDetailBookLoadFun(this.loadData);
+        this.getBorrowedKeyAndValue();
     }
 
     addDetailBook = () => {
@@ -29,6 +28,16 @@ class DetailBook extends React.Component{
         });
     }
 
+
+    getBorrowedKeyAndValue = () => {
+        const _this = this;
+        axios.post('/detailBookController/getBorrowedKeyAndValue',{
+        }).then(function (response) {
+            _this.setState({borrowedKeyAndValue: response.data});
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
 
     loadData = () => {
         const _this = this;
@@ -68,11 +77,7 @@ class DetailBook extends React.Component{
             {title: '借出状态', dataIndex: 'borrowed', render: function(text, record, index){
                 
                 let borrowState = "";
-                if(text === 1){
-                    borrowState = "已借出";
-                }else if(text === 0){
-                    borrowState = "未借出";
-                }
+                borrowState = _this.state.borrowedKeyAndValue[text];
                 return borrowState;
                 
             },width: '120px'},

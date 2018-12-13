@@ -88,16 +88,21 @@ export const editBookType = Mock.mock('/bookTypeController/editBookType', functi
     }
 })
 
-
+/**获得书籍类型key和类型名称对应关系action */
 export const getSimpleBookAction = Mock.mock('/bookTypeController/getSimpleBook', function(options){
+    return getSimpleBook();
+})
+
+export const getSimpleDataAction = Mock.mock('/bookTypeController/getSimpleData', function(options){
+    return bookTypes;
+})
+
+/** 获得书籍类型key和类型名称对应关系*/
+export const getSimpleBook = () => {
     const bookTypeMap = {};
     for (let i = 0; i < bookTypes.length; i++) {
         const bookType = bookTypes[i];
         bookTypeMap[bookType.key] = bookType.name;
     }
     return bookTypeMap;
-})
-
-export const getSimpleDataAction = Mock.mock('/bookTypeController/getSimpleData', function(options){
-    return bookTypes;
-})
+}
