@@ -1,5 +1,5 @@
 import React from 'react'
-import {Table, Modal, Button, Icon, Tooltip} from 'antd'
+import {Table, Button, Icon, Tooltip} from 'antd'
 import axios from 'axios'
 
 /**图书详情 */

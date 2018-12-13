@@ -3,15 +3,16 @@ import axios from 'axios'
 import {Table,Button, Icon, Modal, Tooltip} from 'antd'
 import {connect} from 'react-redux'
 
-import {menuSet} from '../../redux/actions/common'
 import MainPage from '../../component/mainPage'
+import BorrowAllowed from './BorrowAllowed'
 
 class Borrow extends React.Component{
 
     state = {
         menuKey: '20',
         borrowBooks: [],
-        borrowedKeyAndValue: {}
+        borrowedKeyAndValue: {},
+        detailBookVisible: false
     }
 
 
@@ -19,6 +20,23 @@ class Borrow extends React.Component{
         this.getBorrowBooks();
         this.getBorrowedKeyAndValue();
     }
+
+    /**关闭可借阅图书详情页 */
+    closeDetailBookWindow = () => {
+        this.setState({detailBookVisible: false});
+    }
+
+    /**打开可借阅图书详情页 */
+    borrowBook = () => {
+        this.setState({detailBookVisible: true});
+    }
+
+
+    /**提交借阅申请 */
+    submitBorrow = () => {
+        const _this = this;
+    }
+
 
     getBorrowedKeyAndValue = () => {
         const _this = this;
@@ -102,6 +120,25 @@ class Borrow extends React.Component{
                     title = {() => '已借阅图书'}
                 >
                 </Table>
+
+                <Modal
+                    ref="modal"
+                    visible={this.state.detailBookVisible}
+                    title="请选择借阅书籍" 
+                    onCancel={this.closeDetailBookWindow}
+                    footer={[
+                        <Button key="back" type="ghost" size="large" onClick={this.closeDetailBookWindow}>返 回</Button>,
+                        <Button key="submit" type="primary" size="large"  onClick={this.submitBorrow}>
+                            提 交
+                        </Button>
+                    ]}
+                    bodyStyle={{height:'400px'}}
+                    width='900px'
+                >
+                    <BorrowAllowed>
+
+                    </BorrowAllowed>
+                </Modal>
             </MainPage>
         )
     }

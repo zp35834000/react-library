@@ -86,6 +86,32 @@ export const getAllBooks = () => {
     return bookOverviews;
 }
 
+/**获得可借阅书籍 */
+export const getBooksCanBorrow = () => {
+    // 结果集合
+    let booksCanBorrow = [];
+
+    for (let i = 0; i < books.length; i++) {
+        const book = books[i];
+        // 遍历详情，如果有可借阅书籍，则添加到结果集
+        for (let j = 0; j < detailBooks.length; j++) {
+            const detailBook = detailBooks[j];
+            if(detailBook.bookKey === book.key){
+                if(detailBook.borrowed === 0){
+                    booksCanBorrow.push(book);
+                    break;
+                }
+            }
+        }
+    }
+
+    return booksCanBorrow;
+}
+
+
+export const getBooksCanBorrowAction = Mock.mock('/bookController/getBooksCanBorrowAction', function(options){
+    return getBooksCanBorrow();
+})
 
 export const getBookAction = Mock.mock('/bookController/getBook', function(options){
     return getAllBooks();
