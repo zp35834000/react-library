@@ -12,28 +12,39 @@ import {getBookByKey} from './book'
  * borrowUserKey:       借阅用户key
  * borrowTime:          借出时间
  * shouldReturnTime:    应归还时间
+ * borrowCount:         累计借阅此时
  */
 export let detailBooks = [
     {key: '0', borrowed: 1, bookKey: '0', borrowUserKey: 'zpkey', 
-        borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11'},
+        borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11',
+        borrowCount: 4},
     {key: '1', borrowed: 0, bookKey: '0', borrowUserKey: '', 
-        borrowTime: '', shouldReturnTime: ''},
+        borrowTime: '', shouldReturnTime: '',
+        borrowCount: 2},
     {key: '2', borrowed: 0, bookKey: '0', borrowUserKey: '', 
-        borrowTime: '', shouldReturnTime: ''},
+        borrowTime: '', shouldReturnTime: '',
+        borrowCount: 1},
     {key: '3', borrowed: 0, bookKey: '0', borrowUserKey: '', 
-        borrowTime: '', shouldReturnTime: ''},
-    {key: '4', borrowed: 1, bookKey: '1', borrowUserKey: 'zpkey', 
-        borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11'},
+        borrowTime: '', shouldReturnTime: '',
+        borrowCount: 6},
+    {key: '4', borrowed: 2, bookKey: '0', borrowUserKey: 'zpkey', 
+        borrowTime: '', shouldReturnTime: '',
+        borrowCount: 10},
     {key: '5', borrowed: 1, bookKey: '1', borrowUserKey: 'wyyykey', 
-        borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11'},
-    {key: '6', borrowed: 1, bookKey: '1', borrowUserKey: 'wyyykey', 
-        borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11'},
-    {key: '7', borrowed: 1, bookKey: '1', borrowUserKey: 'zpkey', 
-        borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11'},
+        borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11',
+        borrowCount: 11},
+    {key: '6', borrowed: 3, bookKey: '1', borrowUserKey: 'wyyykey', 
+        borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11',
+        borrowCount: 12},
+    {key: '7', borrowed: 3, bookKey: '1', borrowUserKey: 'zpkey', 
+        borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11',
+        borrowCount: 19},
     {key: '8', borrowed: 0, bookKey: '1', borrowUserKey: '', 
-        borrowTime: '', shouldReturnTime: ''},
+        borrowTime: '', shouldReturnTime: '',
+        borrowCount: 9},
     {key: '9', borrowed: 0, bookKey: '1', borrowUserKey: '', 
-        borrowTime: '', shouldReturnTime: ''}
+        borrowTime: '', shouldReturnTime: '',
+        borrowCount: 1}
 ]
 
 /** detailBooks中借出状态和描述对应关系*/
@@ -47,6 +58,21 @@ export const borrowedKeyAndValue = {
 export const getBorrowedKeyAndValue = Mock.mock('/detailBookController/getBorrowedKeyAndValue', function(options){
     return borrowedKeyAndValue;
 })
+
+/**通过图书详情id获得该图书的详细信息 */
+export const getbookDescByDetailBookKey = (detailBookKey) => {
+    // 通过detailBookKey获得归属的bookkey
+    let bookKey = '';
+    for (let i = 0; i < detailBooks.length; i++) {
+        const detailBook = detailBooks[i];
+        if(detailBook.key === detailBookKey){
+            bookKey = detailBook.bookKey;
+            break;
+        }
+    }
+    const bookDesc = getBookByKey(bookKey);
+    return bookDesc;
+}
 
 export const getBookByBookKey = Mock.mock('/detailBookController/getBookByBookKey', function(options){
     const bookKey = JSON.parse(options.body).bookKey;
@@ -75,6 +101,7 @@ export const addDetailBook = Mock.mock('/detailBookController/addDetailBook', fu
         borrowTime: '', 
         shouldReturnTime: '',
         bookKey,
+        borrowCount: 0
     }
     detailBooks.push(detailBookNeedAdd);
 })
@@ -112,12 +139,65 @@ export const getDetailByUserKeyAction = Mock.mock('/detailBookController/getDeta
     return borrowBooks;
 })
 
+/** 申请归还图书 */
 export const setDetailReturnReviewAction = Mock.mock('/detailBookController/setDetailReturnReview', function(options){
     const key = JSON.parse(options.body).key;
     for (let i = 0; i < detailBooks.length; i++) {
         const detailBook = detailBooks[i];
         if(detailBook.key === key){
             detailBook.borrowed = 3;
+            break;
+        }
+    }
+})
+
+/**根据用户key和申请借阅的bookKey获得借阅书籍详情key集合 */
+export const applyBorrowBook = (borrowBookKeys, userKey) => {
+    const detailBookKeys = [];
+    for (let i = 0; i < borrowBookKeys.length; i++) {
+        const borrowBookKey = borrowBookKeys[i];
+        for (let j = 0; j < detailBooks.length; j++) {
+            const detailBook = detailBooks[j];
+            if(detailBook.borrowed === 0 && detailBook.bookKey === borrowBookKey){
+                detailBook.borrowed = 2;
+                detailBook.borrowUserKey = userKey;
+                detailBookKeys.push(detailBook.key);
+                break;
+            }
+        }
+    }
+    return detailBookKeys;
+}
+
+/**申请借阅书籍 */
+export const applyBorrowBookAction = Mock.mock('/detailBookController/applyBorrowBookAction', function(options){
+    const borrowBookKeys = JSON.parse(options.body).borrowBookKeys;
+    const userKey = JSON.parse(options.body).userKey;
+    applyBorrowBook(borrowBookKeys, userKey);
+})
+
+/**撤回借阅申请 */
+export const recallApplyAction = Mock.mock('/detailBookController/recallApplyAction', function(options){
+    const detailBookKey = JSON.parse(options.body).detailBookKey;
+    for (let i = 0; i < detailBooks.length; i++) {
+        const detailBook = detailBooks[i];
+        if(detailBook.key === detailBookKey){
+            detailBook.borrowed = 0;
+            detailBook.borrowUserKey = '';
+            break;
+        }
+    }
+})
+
+/**撤回归还申请 */
+export const recallReturnAction = Mock.mock('/detailBookController/recallReturnAction', function(options){
+    debugger;
+    const detailBookKey = JSON.parse(options.body).detailBookKey;
+    for (let i = 0; i < detailBooks.length; i++) {
+        const detailBook = detailBooks[i];
+        if(detailBook.key === detailBookKey){
+            detailBook.borrowed = 1;
+            console.log(detailBook);
             break;
         }
     }

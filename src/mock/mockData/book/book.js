@@ -73,10 +73,11 @@ export const getAllBooks = () => {
             const bookOverview = bookOverviews[j];
             if(bookOverview.key === detailBook.bookKey){
                 bookOverview.total += 1;
-                if(detailBook.borrowed === 1){
-                    bookOverview.borrowed += 1;
-                }else{
+                if(detailBook.borrowed === 0){
+                    // bookOverview.borrowed += 1;
                     bookOverview.circulated += 1;
+                }else{
+                    bookOverview.borrowed += 1;
                 }
                 break;
             }

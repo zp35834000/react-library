@@ -6,12 +6,22 @@ class BorrowAllowed extends React.Component{
 
     state = {
         data: [],
-        bookTypeMap: {}
+        bookTypeMap: {},
+        selectedRowKeyArr: []
+    }
+
+    componentDidMount(){
+        this.props.onRef(this);
+    }
+
+    componentWillReceiveProps(){
+        this.props.onRef(this);
     }
 
     componentWillMount() {
         this.getBooksCanBorrow();
         this.loadBookTypeMap();
+        this.props.onRef(this);
     }
 
     getBooksCanBorrow = () => {
@@ -37,6 +47,8 @@ class BorrowAllowed extends React.Component{
         });
     }
 
+    
+
     render() {
 
 
@@ -58,6 +70,24 @@ class BorrowAllowed extends React.Component{
         ]
 
         const _this = this;
+
+        // 选中信息
+        const rowSelection = {
+
+            onChange: (selectedRowKeyArr, selectedRows) => {
+                _this.setState({selectedRowKeyArr: selectedRowKeyArr})
+                // selectedRowKeys = selectedRowKeyArr;
+                // console.log(`selectedRowKeys: ${selectedRowKeyArr}`, 'selectedRows: ', selectedRows);
+            },
+            onSelect: (record, selected, selectedRows) => {
+                // console.log(record, selected, selectedRows);
+            },
+            onSelectAll: (selected, selectedRows, changeRows) => {
+                // console.log(selected, selectedRows, changeRows);
+            },
+            selectedRowKeys: _this.state.selectedRowKeyArr
+        };
+
         return (
             <Table
                 pagination = {{
@@ -66,8 +96,10 @@ class BorrowAllowed extends React.Component{
                 }}
                 bordered = {true}
                 columns = {columns}
-                dataSource = {this.state.data}
+                // dataSource = {this.state.data}
+                dataSource = {this.props.booksCanBorrow}
                 scroll = {{x:800,y: 200}}
+                rowSelection = {rowSelection}
             >
 
             </Table>

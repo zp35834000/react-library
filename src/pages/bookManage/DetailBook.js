@@ -84,6 +84,7 @@ class DetailBook extends React.Component{
             {title: '借阅用户', dataIndex: 'borrowUserKey',width: '120px'},
             {title: '借出时间', dataIndex: 'borrowTime',width: '130px'},
             {title: '应归还时间', dataIndex: 'shouldReturnTime',width: '130px'},
+            {title: '累计借阅次数', dataIndex: 'borrowCount',width: '130px'},
             {
                 title: '操作',
                 dataIndex: 'operation_col',

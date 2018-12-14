@@ -13,6 +13,9 @@ import {} from './mockData/book/book'
 import {} from './mockData/book/bookType'
 import {} from './mockData/book/detailBook'
 
+// 借阅相关mock数据
+import {} from './mockData/bookBorrow/borrowApply'
+
 Mock.mock( '/user', function(options){
     console.log(options);
     let data = Mock.mock({
