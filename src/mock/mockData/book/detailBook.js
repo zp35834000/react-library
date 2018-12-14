@@ -139,6 +139,17 @@ export const getDetailByUserKeyAction = Mock.mock('/detailBookController/getDeta
     return borrowBooks;
 })
 
+/**将图书详情置为归还申请状态 */
+export const setDetailReturnReview = (detailBookKey) => {
+    for (let i = 0; i < detailBooks.length; i++) {
+        const detailBook = detailBooks[i];
+        if(detailBook.key === detailBookKey){
+            detailBook.borrowed = 3;
+            break;
+        }
+    }
+}
+
 /** 申请归还图书 */
 export const setDetailReturnReviewAction = Mock.mock('/detailBookController/setDetailReturnReview', function(options){
     const key = JSON.parse(options.body).key;
@@ -176,9 +187,8 @@ export const applyBorrowBookAction = Mock.mock('/detailBookController/applyBorro
     applyBorrowBook(borrowBookKeys, userKey);
 })
 
-/**撤回借阅申请 */
-export const recallApplyAction = Mock.mock('/detailBookController/recallApplyAction', function(options){
-    const detailBookKey = JSON.parse(options.body).detailBookKey;
+/** 将图书详情置为可借阅状态*/
+export const recallBorrowApply = (detailBookKey)=> {
     for (let i = 0; i < detailBooks.length; i++) {
         const detailBook = detailBooks[i];
         if(detailBook.key === detailBookKey){
@@ -187,12 +197,17 @@ export const recallApplyAction = Mock.mock('/detailBookController/recallApplyAct
             break;
         }
     }
+}
+
+/**撤回借阅申请 */
+export const recallApplyAction = Mock.mock('/detailBookController/recallApplyAction', function(options){
+    const detailBookKey = JSON.parse(options.body).detailBookKey;
+    recallBorrowApply(detailBookKey);
 })
 
-/**撤回归还申请 */
-export const recallReturnAction = Mock.mock('/detailBookController/recallReturnAction', function(options){
-    debugger;
-    const detailBookKey = JSON.parse(options.body).detailBookKey;
+
+/**将图书置为借阅成功状态 */
+export const setBorrowSuccess = (detailBookKey) => {
     for (let i = 0; i < detailBooks.length; i++) {
         const detailBook = detailBooks[i];
         if(detailBook.key === detailBookKey){
@@ -201,4 +216,10 @@ export const recallReturnAction = Mock.mock('/detailBookController/recallReturnA
             break;
         }
     }
+}
+
+/**撤回归还申请 */
+export const recallReturnAction = Mock.mock('/detailBookController/recallReturnAction', function(options){
+    const detailBookKey = JSON.parse(options.body).detailBookKey;
+    setBorrowSuccess(detailBookKey);
 })

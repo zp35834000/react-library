@@ -1,7 +1,13 @@
 import Mock from 'mockjs'
+import moment from 'moment';
+
 import {guid} from '../../util'
 
-import {applyBorrowBook, getbookDescByDetailBookKey} from '../book/detailBook'
+import {applyBorrowBook, getbookDescByDetailBookKey, 
+    setDetailReturnReview, recallBorrowApply, setBorrowSuccess} from '../book/detailBook'
+
+/**归还借阅书籍时间的格式 */
+export const BORROW_RETURN_DATE_FORMAT = 'YYYY-MM-DD';
 
 export let borrowApplies = [
     {key: '0', borrowed: 1, detailBook: '0', borrowUserKey: 'zpkey', 
@@ -86,6 +92,7 @@ export const getBorrowApplyByUserKeyAction = Mock.mock('/borrowApplyController/g
                 shouldReturnTime: borrowApply.shouldReturnTime,
                 returnTime: borrowApply.returnTime,
                 auditingMessage: borrowApply.auditingMessage,
+                detailBook: borrowApply.detailBook
             })
             borrowApplyResult.push(borrowApplyTemp);
         }
@@ -96,4 +103,57 @@ export const getBorrowApplyByUserKeyAction = Mock.mock('/borrowApplyController/g
 
 export const getBorrowedKeyAndValueAction = Mock.mock('/borrowApplyController/getBorrowedKeyAndValueAction', function(options){
     return borrowedKeyAndValue;
+})
+
+/**提交归还申请 */
+export const handleReturnApplyAction = Mock.mock('/borrowApplyController/handleReturnApplyAction', function(options){
+    const detailBookKey = JSON.parse(options.body).detailBookKey;
+    const key = JSON.parse(options.body).key;
+    // 将图书详情置为归还申请状态
+    setDetailReturnReview(detailBookKey);
+
+    for (let i = 0; i < borrowApplies.length; i++) {
+        const borrowApply = borrowApplies[i];
+        if(borrowApply.key === key){
+            borrowApply.borrowed = 3;
+            borrowApply.returnTime = moment(Date.now()).format(BORROW_RETURN_DATE_FORMAT);
+            borrowApply.auditingMessage = '归还审批中';
+            break;
+        }
+    }
+})
+
+/**撤回借阅申请 */
+export const recallBorrowApplyAction = Mock.mock('/borrowApplyController/recallBorrowApplyAction', function(options){
+    const detailBookKey = JSON.parse(options.body).detailBookKey;
+    const key = JSON.parse(options.body).key;
+    // 将图书详情置为可借阅状态
+    recallBorrowApply(detailBookKey);
+
+    // 用户自己撤回，可以直接删除申请记录
+    for (let i = 0; i < borrowApplies.length; i++) {
+        const borrowApply = borrowApplies[i];
+        if(borrowApply.key === key){
+            borrowApplies.splice(i, 1)
+        }
+    }
+})
+
+
+/**撤回归还申请 */
+export const recallReturnApplyAction = Mock.mock('/borrowApplyController/recallReturnApplyAction', function(options){
+    const detailBookKey = JSON.parse(options.body).detailBookKey;
+    const key = JSON.parse(options.body).key;
+    // 将图书详情置为借阅成功状态
+    setBorrowSuccess(detailBookKey);
+
+    // 撤回归还申请，改变状态，并删除归还时间
+    for (let i = 0; i < borrowApplies.length; i++) {
+        const borrowApply = borrowApplies[i];
+        if(borrowApply.key === key){
+            borrowApply.borrowed = 1;
+            borrowApply.returnTime = '';
+            borrowApply.auditingMessage = '借阅成功';
+        }
+    }
 })

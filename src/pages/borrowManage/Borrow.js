@@ -104,8 +104,9 @@ class Borrow extends React.Component{
     /**归还图书，进入归还审批 */
     returnBook = (record) => {
         const _this = this;
-        axios.post('/detailBookController/setDetailReturnReview',{
-            key: record.key
+        axios.post('/borrowApplyController/handleReturnApplyAction',{
+            key: record.key,
+            detailBookKey: record.detailBook
         }).then(function (response) {
             _this.getBorrowBooks();
         }).catch(function (error) {
@@ -116,8 +117,9 @@ class Borrow extends React.Component{
     /**撤回借阅申请 */
     recallBorrow = (record) => {
         const _this = this;
-        axios.post('/detailBookController/recallApplyAction',{
-            detailBookKey: record.key
+        axios.post('/borrowApplyController/recallBorrowApplyAction',{
+            key: record.key,
+            detailBookKey: record.detailBook
         }).then(function (response) {
             _this.getBorrowBooks();
         }).catch(function (error) {
@@ -129,8 +131,9 @@ class Borrow extends React.Component{
     recallReturn = (record) => {
         debugger;
         const _this = this;
-        axios.post('/detailBookController/recallReturnAction',{
-            detailBookKey: record.key
+        axios.post('/borrowApplyController/recallReturnApplyAction',{
+            key: record.key,
+            detailBookKey: record.detailBook
         }).then(function (response) {
             _this.getBorrowBooks();
         }).catch(function (error) {
