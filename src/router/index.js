@@ -6,6 +6,8 @@ import Menu from '../pages/authority/menu'
 import Role from '../pages/authority/role'
 import User from '../pages/authority/User'
 
+// 申请管理
+import VerifyBorrow from '../pages/applyManage/VerifyBorrow'
 
 // 图书管理
 import Book from '../pages/bookManage/Book'
@@ -30,6 +32,8 @@ const route = () => (
             <Route path='/bookType' component={BookType}></Route>
 
             <Route path='/borrowManage/borrow' component={BookBoorrow}></Route>
+
+            <Route path='/applyManage/VerifyBorrow' component={VerifyBorrow}></Route>
         </div>
     </BrowserRouter>
 )

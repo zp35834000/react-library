@@ -26,6 +26,10 @@ export const getUserKeyAndName = () => {
     return UserKeyAndName;
 }
 
+export const getUserKeyAndNameAction = Mock.mock('/userController/getUserKeyAndName', function(options){
+    return getUserKeyAndName();
+})
+
 // 地址信息
 export const addressArr = [
     {value: 'beijing', label: '北京',children: [

@@ -9,6 +9,7 @@ export let allUserRole = [
     {userKey: 'wyyykey', roleKey: '1', key: '2'},
     {userKey: 'zpkey', roleKey: '2', key: '3'},
     {userKey: 'wyyykey', roleKey: '2', key: '4'},
+    {userKey: 'zpkey', roleKey: '3', key: '5'},
 ]
 
 /**通过用户key获得roleKey集合 */

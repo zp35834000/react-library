@@ -18,6 +18,10 @@ let allMenus = [
     // 借阅管理
     {name: '借阅管理', url: '', iconType: '', level: '0', order:'2', key: '2'},
     {name: '借阅图书', url: '/borrowManage/borrow', iconType: '', level: '1', order:'0', key: '20', parentId: '2'},
+    // 借阅审批
+    {name: '申请管理', url: '', iconType: '', level: '0', order:'3', key: '3'},
+    {name: '借阅申请', url: '/applyManage/verifyBorrow', iconType: '', level: '1', order:'0', key: '30', parentId: '3'},
+
 ]
 
 

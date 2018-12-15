@@ -15,6 +15,8 @@ export let allRoleMenu = [
     {roleId: '1', menuId: '01', key: '5'},
     {roleId: '2', menuId: '2', key: '9'},
     {roleId: '2', menuId: '20', key: '10'},
+    {roleId: '3', menuId: '3', key: '11'},
+    {roleId: '3', menuId: '30', key: '12'},
 ]
 
 /**

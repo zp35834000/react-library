@@ -150,6 +150,7 @@ class Borrow extends React.Component{
             {title: '出版社', dataIndex: 'publishingHouse'},
             {title: '出版时间', dataIndex: 'publishingTime'},
             {title: '图书类型', dataIndex: 'type'},
+            {title: '申请时间', dataIndex: 'applyTime'},
             {title: '借阅时间', dataIndex: 'borrowTime'},
             {title: '应归还时间', dataIndex: 'shouldReturnTime'},
             {title: '归还时间', dataIndex: 'returnTime'},
