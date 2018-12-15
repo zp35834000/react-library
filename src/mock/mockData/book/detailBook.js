@@ -55,6 +55,30 @@ export const borrowedKeyAndValue = {
     3: '归还审批中',
 }
 
+/**
+ * 更新detailbook
+ * @param {需要更新的detailbook key} key 
+ * @param {需要更新的值及变更结果} updateObj 
+ */
+export const updateDetail = (key, updateObj) => {
+    for (let i = 0; i < detailBooks.length; i++) {
+        const detailBook = detailBooks[i];
+        if(detailBook.key === key){
+            for (const detailKey in updateObj) {
+                if (updateObj.hasOwnProperty(detailKey)) {
+                    if(detailKey === 'borrowCount'){
+                        // 如果有更新值borrowCount,则借阅次数+1
+                        detailBook.borrowCount ++;
+                    }else{
+                        detailBook[detailKey] = updateObj[detailKey];
+                    }
+                }
+            }
+            break;
+        }
+    }
+}
+
 export const getBorrowedKeyAndValue = Mock.mock('/detailBookController/getBorrowedKeyAndValue', function(options){
     return borrowedKeyAndValue;
 })

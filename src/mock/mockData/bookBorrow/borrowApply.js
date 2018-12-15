@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import {guid} from '../../util'
 
-import {applyBorrowBook, getbookDescByDetailBookKey, 
+import {applyBorrowBook, getbookDescByDetailBookKey, updateDetail,
     setDetailReturnReview, recallBorrowApply, setBorrowSuccess} from '../book/detailBook'
 
 /**归还借阅书籍时间的格式 */
@@ -40,12 +40,12 @@ export let borrowApplies = [
 
     {key: '3', borrowed: 3, detailBook: '6', borrowUserKey: 'wyyykey', 
         borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11',
-        returnTime: '', borrowAuditingUserKey: 'zpKey', applyTime: '2019-12-12',
+        returnTime: '2018-12-12', borrowAuditingUserKey: 'zpKey', applyTime: '2018-12-12',
         returnAuditingUserKey: '', auditingMessage: '归还审核中',},
 
     {key: '4', borrowed: 4, detailBook: '7', borrowUserKey: 'zpkey', 
         borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11',
-        returnTime: '', borrowAuditingUserKey: 'zpKey', applyTime: '2018-01-09',
+        returnTime: '', borrowAuditingUserKey: 'zpKey', applyTime: '2019-01-09',
         returnAuditingUserKey: 'zpKey', auditingMessage: '图书有损坏',},
 
     {key: '5', borrowed: 0, detailBook: '9', borrowUserKey: 'zpkey', 
@@ -117,7 +117,7 @@ export const getBorrowApplyByUserKeyAction = Mock.mock('/borrowApplyController/g
 
 /**获得需要审核的申请 */
 export const getBorrowAppliesNeedVerifiedAction = Mock.mock('/borrowApplyController/getBorrowAppliesNeedVerifiedAction', function(options){
-    // debugger;
+    debugger;
     const borrowApplyResult = [];
     for (let i = 0; i < borrowApplies.length; i++) {
         const borrowApply = borrowApplies[i];
@@ -133,7 +133,9 @@ export const getBorrowAppliesNeedVerifiedAction = Mock.mock('/borrowApplyControl
                 auditingMessage: borrowApply.auditingMessage,
                 detailBook: borrowApply.detailBook,
                 applyTime: borrowApply.applyTime,
-                borrowUserKey: borrowApply.borrowUserKey
+                borrowUserKey: borrowApply.borrowUserKey,
+                borrowAuditingUserKey: borrowApply.borrowAuditingUserKey,
+                returnAuditingUserKey: borrowApply.returnAuditingUserKey
             })
             borrowApplyResult.push(borrowApplyTemp);
         }
@@ -197,6 +199,111 @@ export const recallReturnApplyAction = Mock.mock('/borrowApplyController/recallR
             borrowApply.returnTime = '';
             borrowApply.auditingMessage = '借阅成功';
             borrowApply.applyTime = '';
+        }
+    }
+})
+
+
+/**借阅审核通过 */
+export const approvedBorrowAction = Mock.mock('/borrowApplyController/approvedBorrowAction', function(options){
+    // 审核人id
+    const applyKey = JSON.parse(options.body).applyKey;
+    // 审核记录id
+    const verifyUserKey = JSON.parse(options.body).verifyUserKey;
+    for (let i = 0; i < borrowApplies.length; i++) {
+        const borrowApply = borrowApplies[i];
+        if(borrowApply.key === applyKey){
+            const borrowTime = moment(new Date()).format(BORROW_RETURN_DATE_FORMAT);
+            borrowApply.borrowTime = borrowTime;
+            // 暂定可借阅时间为30天
+            const shouldReturnTime = moment(new Date()).add(30, 'days').format(BORROW_RETURN_DATE_FORMAT)
+
+            borrowApply.shouldReturnTime = shouldReturnTime;
+            borrowApply.borrowAuditingUserKey = verifyUserKey;
+            borrowApply.auditingMessage = '借阅成功';
+            borrowApply.applyTime = '';
+            borrowApply.borrowed = 1;
+            const updateDetailBookObj = {
+                borrowCount: 0,
+                borrowed: 1,
+                shouldReturnTime,
+                borrowTime
+            }
+            // 更新借阅图书的状态
+            updateDetail(borrowApply.detailBook, updateDetailBookObj);
+        }
+    }
+})
+
+/**借阅审核驳回 */
+export const refuseBorrowAction = Mock.mock('/borrowApplyController/refuseBorrowAction', function(options){
+    // 审核人id
+    const applyKey = JSON.parse(options.body).applyKey;
+    // 审核记录id
+    const verifyUserKey = JSON.parse(options.body).verifyUserKey;
+    for (let i = 0; i < borrowApplies.length; i++) {
+        const borrowApply = borrowApplies[i];
+        if(borrowApply.key === applyKey){
+
+            borrowApply.borrowAuditingUserKey = verifyUserKey;
+            borrowApply.auditingMessage = '借阅审核未通过';
+            borrowApply.applyTime = '';
+            borrowApply.borrowed = 5;
+            const updateDetailBookObj = {
+                borrowed: 0,
+                borrowUserKey: ''
+            }
+            // 更新借阅图书的状态
+            updateDetail(borrowApply.detailBook, updateDetailBookObj);
+        }
+    }
+})
+
+/**归还审核通过 */
+export const approvedReturnAction = Mock.mock('/borrowApplyController/approvedReturnAction', function(options){
+    // 审核人id
+    const applyKey = JSON.parse(options.body).applyKey;
+    // 审核记录id
+    const verifyUserKey = JSON.parse(options.body).verifyUserKey;
+    for (let i = 0; i < borrowApplies.length; i++) {
+        const borrowApply = borrowApplies[i];
+        if(borrowApply.key === applyKey){
+
+            borrowApply.returnAuditingUserKey = verifyUserKey;
+            borrowApply.auditingMessage = '归还复审通过';
+            borrowApply.applyTime = '';
+            borrowApply.borrowed = 0;
+            const updateDetailBookObj = {
+                borrowed: 0,
+                borrowUserKey: '',
+                borrowTime: '',
+                shouldReturnTime: ''
+            }
+            // 更新借阅图书的状态
+            updateDetail(borrowApply.detailBook, updateDetailBookObj);
+        }
+    }
+})
+
+/**归还审核驳回 */
+export const refuseReturnAction = Mock.mock('/borrowApplyController/refuseReturnAction', function(options){
+    // 审核人id
+    const applyKey = JSON.parse(options.body).applyKey;
+    // 审核记录id
+    const verifyUserKey = JSON.parse(options.body).verifyUserKey;
+    for (let i = 0; i < borrowApplies.length; i++) {
+        const borrowApply = borrowApplies[i];
+        if(borrowApply.key === applyKey){
+
+            borrowApply.returnAuditingUserKey = verifyUserKey;
+            borrowApply.auditingMessage = '图书多处损坏';
+            borrowApply.applyTime = '';
+            borrowApply.borrowed = 4;
+            const updateDetailBookObj = {
+                borrowed: 3,
+            }
+            // 更新借阅图书的状态
+            updateDetail(borrowApply.detailBook, updateDetailBookObj);
         }
     }
 })

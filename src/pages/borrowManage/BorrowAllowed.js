@@ -58,7 +58,6 @@ class BorrowAllowed extends React.Component{
             {title: '出版社', dataIndex: 'publishingHouse', width: '200px'},
             {title: '出版时间', dataIndex: 'publishingTime', width: '200px'},
             {title: '图书类型', dataIndex: 'type', render: function(text, record, index){
-                debugger;
                 let bookTypeName = text;
                 bookTypeName = _this.state.bookTypeMap[bookTypeName];
                 if(bookTypeName === undefined){
