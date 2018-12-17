@@ -5,6 +5,7 @@ import {guid} from '../../util'
 
 import {applyBorrowBook, getbookDescByDetailBookKey, updateDetail,
     setDetailReturnReview, recallBorrowApply, setBorrowSuccess} from '../book/detailBook'
+import {getUserKeyAndName} from '../User'
 
 /**归还借阅书籍时间的格式 */
 export const BORROW_RETURN_DATE_FORMAT = 'YYYY-MM-DD';
@@ -25,7 +26,7 @@ export const BORROW_RETURN_DATE_FORMAT = 'YYYY-MM-DD';
 export let borrowApplies = [
     {key: '0', borrowed: 1, detailBook: '0', borrowUserKey: 'zpkey', 
         borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11',
-        returnTime: '', borrowAuditingUserKey: 'zpKey', applyTime: '',
+        returnTime: '', borrowAuditingUserKey: 'zpkey', applyTime: '',
         returnAuditingUserKey: '', auditingMessage: '借阅成功',},
 
     {key: '1', borrowed: 2, detailBook: '4', borrowUserKey: 'zpkey', 
@@ -35,22 +36,22 @@ export let borrowApplies = [
 
     {key: '2', borrowed: 1, detailBook: '5', borrowUserKey: 'wyyykey', 
         borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11',
-        returnTime: '', borrowAuditingUserKey: 'zpKey', applyTime: '',
+        returnTime: '', borrowAuditingUserKey: 'zpkey', applyTime: '',
         returnAuditingUserKey: '', auditingMessage: '借阅成功',},
 
     {key: '3', borrowed: 3, detailBook: '6', borrowUserKey: 'wyyykey', 
         borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11',
-        returnTime: '2018-12-12', borrowAuditingUserKey: 'zpKey', applyTime: '2018-12-12',
+        returnTime: '2018-12-12', borrowAuditingUserKey: 'zpkey', applyTime: '2018-12-12',
         returnAuditingUserKey: '', auditingMessage: '归还审核中',},
 
     {key: '4', borrowed: 4, detailBook: '7', borrowUserKey: 'zpkey', 
         borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11',
-        returnTime: '', borrowAuditingUserKey: 'zpKey', applyTime: '2019-01-09',
-        returnAuditingUserKey: 'zpKey', auditingMessage: '图书有损坏',},
+        returnTime: '', borrowAuditingUserKey: 'zpkey', applyTime: '2019-01-09',
+        returnAuditingUserKey: 'zpkey', auditingMessage: '图书有损坏',},
 
     {key: '5', borrowed: 0, detailBook: '9', borrowUserKey: 'zpkey', 
         borrowTime: '2018-12-11', shouldReturnTime: '2019-01-11',
-        returnTime: '2018-12-25', borrowAuditingUserKey: 'zpKey', applyTime: '',
+        returnTime: '2018-12-25', borrowAuditingUserKey: 'zpkey', applyTime: '',
         returnAuditingUserKey: 'zpkey', auditingMessage: '归还成功',},
 
 ]
@@ -117,8 +118,9 @@ export const getBorrowApplyByUserKeyAction = Mock.mock('/borrowApplyController/g
 
 /**获得需要审核的申请 */
 export const getBorrowAppliesNeedVerifiedAction = Mock.mock('/borrowApplyController/getBorrowAppliesNeedVerifiedAction', function(options){
-    debugger;
     const borrowApplyResult = [];
+    debugger;
+    const userKeyAndName = getUserKeyAndName();
     for (let i = 0; i < borrowApplies.length; i++) {
         const borrowApply = borrowApplies[i];
         if(borrowApply.borrowed === 2 || borrowApply.borrowed === 3 ||
@@ -134,6 +136,7 @@ export const getBorrowAppliesNeedVerifiedAction = Mock.mock('/borrowApplyControl
                 detailBook: borrowApply.detailBook,
                 applyTime: borrowApply.applyTime,
                 borrowUserKey: borrowApply.borrowUserKey,
+                borrowUserName: userKeyAndName[borrowApply.borrowUserKey],
                 borrowAuditingUserKey: borrowApply.borrowAuditingUserKey,
                 returnAuditingUserKey: borrowApply.returnAuditingUserKey
             })

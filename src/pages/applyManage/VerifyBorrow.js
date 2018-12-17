@@ -131,7 +131,6 @@ class VerifyBorrow extends React.Component{
             {title: '借阅审核人', dataIndex: 'borrowAuditingUserKey', render: function(text, record, index){
                 let borrowUsername =  _this.state.userKeyAndName[text];
                 return borrowUsername;
-                
             }},
             {title: '应归还时间', dataIndex: 'shouldReturnTime'},
             {title: '归还时间', dataIndex: 'returnTime'},
@@ -139,7 +138,6 @@ class VerifyBorrow extends React.Component{
                 
                 let returnAuditingUserKey =  _this.state.userKeyAndName[text];
                 return returnAuditingUserKey;
-                
             }},
             {title: '审核信息', dataIndex: 'auditingMessage'},
             {title: '借阅状态', dataIndex: 'borrowed', render: function(text, record, index){
